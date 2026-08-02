@@ -17,44 +17,43 @@ datasource db {
 enum UserRole {
   SUPER_ADMIN
   PERANGKAT_DESA
-  PEMILIK_UMKM
 }
 
 model User {
-  id           String   @id @default(cuid())
+  id String @id @default(cuid())
 
   name         String
-  email        String   @unique
+  email        String @unique
   passwordHash String
 
-  role         UserRole
+  role UserRole
 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   perangkatDesa PerangkatDesa?
 
-  news         News[]
+  news News[]
 
-  umkm         Umkm[]
+  umkm Umkm[]
 }
 
 model PerangkatDesa {
-  id                  String @id @default(cuid())
+  id String @id @default(cuid())
 
-  userId              String @unique
+  userId String @unique
 
-  user                User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  jabatan             String
+  jabatan String
 
-  nip                 String?
+  nip String?
 
-  pendidikanTerakhir  String?
+  pendidikanTerakhir String?
 
-  foto                String?
+  foto String?
 
-  masaJabatan         String?
+  masaJabatan String?
 
   createdAt DateTime @default(now())
 
@@ -62,61 +61,112 @@ model PerangkatDesa {
 }
 
 model News {
-  id          String @id @default(cuid())
+  id String @id @default(cuid())
 
-  title       String
+  title String
 
-  slug        String @unique
+  slug String @unique
 
-  content     String
+  content String
 
-  image       String?
+  image String?
 
-  authorId    String?
+  authorId String?
 
-  author      User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  updatedAt   DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
 
 model Umkm {
-  id            String @id @default(cuid())
+  id String @id @default(cuid())
 
-  businessName  String
+  businessName String
 
-  ownerId       String
+  ownerId String
 
-  owner         User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
-  description   String?
+  description String?
 
-  whatsapp      String?
+  whatsapp String?
 
-  address       String?
+  address String?
 
-  image         String?
+  image String?
 
-  createdAt     DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  updatedAt     DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
 
-model Lembaga {
-  id             String   @id @default(cuid())
+model Gallery {
+  id String @id @default(cuid())
 
-  namaLengkap    String
-  singkatan      String?
+  title String
 
-  namaKetua      String?
+  image String
 
-  jumlahAnggota  Int      @default(0)
+  description String?
 
-  deskripsi      String?
+  createdAt DateTime @default(now())
+}
 
-  gambar         String?
+model Service {
+  id String @id @default(cuid())
 
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  name String
+
+  description String?
+
+  requirement String?
+
+  isActive Boolean @default(true)
+
+  requests ServiceRequest[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+enum RequestStatus {
+  PENDING
+  PROCESS
+  FINISHED
+  REJECTED
+}
+
+model ServiceRequest {
+  id String @id @default(cuid())
+
+  submissionNumber String @unique
+
+  serviceId String
+
+  service Service @relation(fields: [serviceId], references: [id])
+
+  fullName String
+
+  nik String
+
+  phone String
+
+  address String
+
+  description String?
+
+  ktpFile String?
+
+  kkFile String?
+
+  status RequestStatus @default(PENDING)
+
+  note String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
 }
