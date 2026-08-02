@@ -8,6 +8,4 @@ export const serviceSchema = z.object({
   description: z.string().optional(),
 
   requirement: z.string().optional(),
-
-  isActive: z.boolean(),
 });

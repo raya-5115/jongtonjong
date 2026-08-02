@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import {prisma} from "@/lib/prisma";
 
 export async function getServices() {
   return prisma.service.findMany({
@@ -8,9 +8,11 @@ export async function getServices() {
   });
 }
 
-export async function getService(id) {
+export async function getServiceById(id) {
   return prisma.service.findUnique({
-    where: { id },
+    where: {
+      id,
+    },
   });
 }
 
@@ -22,13 +24,17 @@ export async function createService(data) {
 
 export async function updateService(id, data) {
   return prisma.service.update({
-    where: { id },
+    where: {
+      id,
+    },
     data,
   });
 }
 
 export async function deleteService(id) {
   return prisma.service.delete({
-    where: { id },
+    where: {
+      id,
+    },
   });
 }

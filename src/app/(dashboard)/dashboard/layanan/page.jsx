@@ -19,51 +19,39 @@ export default async function ServicePage() {
 
   return (
     <div className="space-y-6">
-
       <div className="flex justify-between">
-
         <div>
           <h1 className="text-3xl font-bold">
             Jenis Layanan
           </h1>
-
           <p className="text-muted-foreground">
             Kelola layanan desa.
           </p>
         </div>
-
-        <Button asChild>
-          <Link href="/dashboard/layanan/tambah">
+        
+        <Link href="/dashboard/layanan/tambah">
+          <Button>
             Tambah Layanan
-          </Link>
-        </Button>
-
+          </Button>
+        </Link>
       </div>
 
       <Card>
-
         <CardHeader>
-
           <CardTitle>
             Daftar Layanan
           </CardTitle>
-
           <CardDescription>
             Total {services.length} layanan
           </CardDescription>
-
         </CardHeader>
 
         <CardContent>
-
           <ServiceTable
             services={services}
           />
-
         </CardContent>
-
       </Card>
-
     </div>
   );
 }
