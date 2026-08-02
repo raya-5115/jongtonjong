@@ -1,42 +1,26 @@
-import {
-  LayoutDashboard,
-  Newspaper,
-  Images,
-  Store,
-  Users,
-  Building2,
-  Mail,
-} from "lucide-react";
-
 export const dashboardMenu = [
   {
     title: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
+    href: "/dashboard"
   },
   {
     title: "Berita",
-    href: "/dashboard/berita",
-    icon: Newspaper,
+    href: "/dashboard/berita"
   },
   {
     title: "Galeri",
-    href: "/dashboard/galeri",
-    icon: Images,
+    href: "/dashboard/galeri"
   },
   {
     title: "UMKM",
-    href: "/dashboard/umkm",
-    icon: Store,
+    href: "/dashboard/umkm"
   },
   {
     title: "User",
-    href: "/dashboard/user",
-    icon: Users,
+    href: "/dashboard/user"
   },
   {
     title: "Layanan",
-    href: "/dashboard/layanan",
-    icon: Mail,
-  },
+    href: "/dashboard/layanan"
+  }
 ];

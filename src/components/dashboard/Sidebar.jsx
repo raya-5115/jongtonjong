@@ -34,8 +34,6 @@ export default function Sidebar() {
                 active ? "bg-green-600 text-white" : "hover:bg-gray-100",
               )}
             >
-              <Icon size={18} />
-
               <span>{item.title}</span>
             </Link>
           );
