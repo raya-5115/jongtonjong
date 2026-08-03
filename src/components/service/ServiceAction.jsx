@@ -1,49 +1,66 @@
 "use client";
 
+import { useTransition } from "react";
 import Link from "next/link";
-
-import { MoreHorizontal } from "lucide-react";
-
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-
+import { SquarePen, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { deleteServiceAction } from "@/actions/service.action";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
-import DeleteServiceDialog from "./DeleteServiceDialog";
+export default function ServiceActions({ service }) {
+  const [pending, startTransition] = useTransition();
 
-export default function ServiceActions({
-  service,
-}) {
+  const handleDelete = () => {
+    startTransition(async () => {
+      const result = await deleteServiceAction(service.id);
+
+      if (result.success) {
+        toast.success(result.message);
+      }
+    });
+  };
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <div className="flex justify-end gap-1">
+      <Link href={`/dashboard/layanan/${service.id}/edit`}>
         <Button
-          variant="ghost"
           size="icon"
+          variant="outline"
+          className="border-blue-500 text-blue-600 hover:border-blue-400 hover:bg-blue-100 hover:text-blue-700"
         >
-          <MoreHorizontal size={18} />
+          <SquarePen size={18} />
         </Button>
-      </DropdownMenuTrigger>
+      </Link>
 
-      <DropdownMenuContent align="end">
+      <AlertDialog>
+        <AlertDialogTrigger className="inline-flex size-8 items-center justify-center rounded-lg border border-red-500 bg-background text-red-600 transition-colors hover:border-rose-300 hover:bg-rose-100 hover:text-red-700 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 outline-none">
+          <Trash2 size={18} />
+        </AlertDialogTrigger>
 
-        <DropdownMenuItem asChild>
-          <Link
-            href={`/dashboard/layanan/${service.id}/edit`}
-          >
-            Edit
-          </Link>
-        </DropdownMenuItem>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hapus layanan?</AlertDialogTitle>
+          </AlertDialogHeader>
 
-        <DeleteServiceDialog
-          service={service}
-        />
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
 
-      </DropdownMenuContent>
-    </DropdownMenu>
+            <AlertDialogAction disabled={pending} onClick={handleDelete}>
+              Hapus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   );
 }

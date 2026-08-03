@@ -2,39 +2,42 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { serviceSchema } from "@/validation/service.validation";
-
-import { createServiceAction } from "@/actions/service.action";
-
+import {
+  createServiceAction,
+  updateServiceAction,
+} from "@/actions/service.action";
 import { useRouter } from "next/navigation";
-
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
-export default function ServiceForm() {
+export default function ServiceForm({ service }) {
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(serviceSchema),
 
     defaultValues: {
-      name: "",
-      description: "",
-      requirement: "",
-      isActive: true,
+      name: service?.name ?? "",
+      description: service?.description ?? "",
+      requirement: service?.requirement ?? "",
+      isActive: service?.isActive ?? true,
     },
   });
 
   async function onSubmit(values) {
-    const result = await createServiceAction(values);
+    const result = service
+      ? await updateServiceAction(service.id, values)
+      : await createServiceAction(values);
 
     if (result.success) {
       toast.success(result.message);
@@ -46,39 +49,48 @@ export default function ServiceForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-5"
-    >
-      <div>
-        <Input
-          placeholder="Nama Layanan"
-          {...register("name")}
-        />
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <div className="space-y-2">
+        <Label>Nama Layanan</Label>
 
-        <p className="text-sm text-red-500 mt-1">
-          {errors.name?.message}
-        </p>
+        <Input {...register("name")} placeholder="Contoh: Surat Domisili" />
+
+        {errors.name && (
+          <p className="text-sm text-red-500">{errors.name.message}</p>
+        )}
       </div>
 
-      <Textarea
-        placeholder="Deskripsi"
-        {...register("description")}
-      />
+      <div className="space-y-2">
+        <Label>Deskripsi</Label>
 
-      <Textarea
-        placeholder="Persyaratan"
-        {...register("requirement")}
-      />
+        <Textarea
+          {...register("description")}
+          placeholder="Deskripsi layanan..."
+        />
+      </div>
 
-      <Button
-        disabled={isSubmitting}
-        type="submit"
-      >
-        {isSubmitting
-          ? "Menyimpan..."
-          : "Simpan"}
-      </Button>
+      <div className="space-y-2">
+        <Label>Persyaratan</Label>
+
+        <Textarea {...register("requirement")} placeholder="KTP, KK, dll" />
+      </div>
+
+      <div className="flex items-center gap-3">
+        <Switch
+          defaultChecked
+          onCheckedChange={(checked) => setValue("isActive", checked)}
+        />
+
+        <Label>Aktif</Label>
+      </div>
+
+      <div className="flex justify-between pt-6">
+        <div />
+
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Menyimpan..." : service ? "Update" : "Simpan"}
+        </Button>
+      </div>
     </form>
   );
 }

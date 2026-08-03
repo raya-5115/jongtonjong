@@ -11,6 +11,11 @@ import { Badge } from "@/components/ui/badge";
 
 import ServiceActions from "./ServiceAction";
 
+const serviceDateFormatter = new Intl.DateTimeFormat("id-ID", {
+  dateStyle: "medium",
+  timeZone: "Asia/Jakarta",
+});
+
 export default function ServiceTable({ services }) {
   return (
     <Table>
@@ -45,7 +50,7 @@ export default function ServiceTable({ services }) {
               <TableCell>{service.requirement || "-"}</TableCell>
 
               <TableCell>
-                {new Date(service.createdAt).toLocaleDateString("id-ID")}
+                {serviceDateFormatter.format(new Date(service.createdAt))}
               </TableCell>
 
               <TableCell>
