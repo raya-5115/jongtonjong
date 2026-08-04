@@ -1,0 +1,18 @@
+import { z } from "zod";
+
+export const serviceRequestSchema = z.object({
+  serviceId: z.string().min(1, "Layanan wajib dipilih"),
+
+  fullName: z.string().min(3, "Nama minimal 3 karakter"),
+
+  nik: z
+    .string()
+    .length(16, "NIK harus 16 digit")
+    .regex(/^\d+$/, "NIK hanya boleh berisi angka"),
+
+  phone: z.string().min(10, "Nomor HP tidak valid"),
+
+  address: z.string().min(5, "Alamat terlalu pendek"),
+
+  description: z.string().optional(),
+});
