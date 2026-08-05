@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-
+import Link from "next/link";
+import { Button } from "@/components/ui/button"
 import NewsForm from "@/components/news/NewsForm";
 
 import {
@@ -27,6 +28,13 @@ export default async function EditNewsPage({
       </div>
 
       <NewsForm news={news} />
+
+
+      <Link href="/dashboard">
+        <Button>
+          Dashboard
+        </Button>
+      </Link>
 
     </div>
   );

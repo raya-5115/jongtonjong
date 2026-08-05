@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,122 +8,105 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-enum UserRole {
-  SUPER_ADMIN
-  PERANGKAT_DESA
-}
-
 model User {
-  id String @id @default(cuid())
-
-  name         String
-  email        String @unique
-  passwordHash String
-
-  role UserRole
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  role          UserRole
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  news          News[]
   perangkatDesa PerangkatDesa?
-
-  news News[]
-
-  umkm Umkm[]
+  umkm          Umkm[]
 }
 
 model PerangkatDesa {
-  id String @id @default(cuid())
-
-  userId String @unique
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  jabatan String
-
-  nip String?
-
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  jabatan            String
+  nip                String?
   pendidikanTerakhir String?
-
-  foto String?
-
-  masaJabatan String?
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
+  foto               String?
+  masaJabatan        String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model News {
-  id String @id @default(cuid())
-
-  title String
-
-  slug String @unique
-
-  content String
-
-  image String?
-
-  authorId String?
-
-  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
-
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  content   String
+  image     String?
+  authorId  String?
   createdAt DateTime @default(now())
-
   updatedAt DateTime @updatedAt
+  author    User?    @relation(fields: [authorId], references: [id])
 }
 
 model Umkm {
-  id String @id @default(cuid())
-
+  id           String   @id @default(cuid())
   businessName String
-
-  ownerId String
-
-  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-
-  description String?
-
-  whatsapp String?
-
-  address String?
-
-  image String?
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
+  ownerId      String
+  description  String?
+  whatsapp     String?
+  address      String?
+  image        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  owner        User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 }
 
 model Gallery {
-  id String @id @default(cuid())
-
-  title String
-
-  image String
-
+  id          String   @id @default(cuid())
+  title       String
+  image       String
   description String?
-
-  createdAt DateTime @default(now())
+  createdAt   DateTime @default(now())
 }
 
 model Service {
-  id String @id @default(cuid())
-
-  name String
-
+  id          String           @id @default(cuid())
+  name        String
   description String?
-
   requirement String?
+  isActive    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  requests    ServiceRequest[]
+}
 
-  isActive Boolean @default(true)
+model ServiceRequest {
+  id               String                     @id @default(cuid())
+  submissionNumber String                     @unique
+  serviceId        String
+  fullName         String
+  nik              String
+  phone            String
+  address          String
+  description      String?
+  status           RequestStatus              @default(PENDING)
+  note             String?
+  createdAt        DateTime                   @default(now())
+  updatedAt        DateTime                   @updatedAt
+  service          Service                    @relation(fields: [serviceId], references: [id])
+  attachments      ServiceRequestAttachment[]
+}
 
-  requests ServiceRequest[]
+model ServiceRequestAttachment {
+  id               String         @id @default(cuid())
+  serviceRequestId String
+  fileName         String
+  fileUrl          String
+  createdAt        DateTime       @default(now())
+  serviceRequest   ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+}
 
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
+enum UserRole {
+  SUPER_ADMIN
+  PERANGKAT_DESA
 }
 
 enum RequestStatus {
@@ -137,48 +114,4 @@ enum RequestStatus {
   PROCESS
   FINISHED
   REJECTED
-}
-
-model ServiceRequest {
-  id String @id @default(cuid())
-
-  submissionNumber String @unique
-
-  serviceId String
-
-  service Service @relation(fields: [serviceId], references: [id])
-
-  fullName String
-
-  nik String
-
-  phone String
-
-  address String
-
-  description String?
-
-  attachments ServiceRequestAttachment[]
-
-  status RequestStatus @default(PENDING)
-
-  note String?
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
-}
-
-model ServiceRequestAttachment {
-  id String @id @default(cuid())
-
-  serviceRequestId String
-
-  serviceRequest ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
-
-  fileName String
-
-  fileUrl String
-
-  createdAt DateTime @default(now())
 }

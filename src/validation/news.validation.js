@@ -10,9 +10,4 @@ export const newsSchema = z.object({
     .min(20, "Konten terlalu pendek"),
 
   image: z.string().optional(),
-
-  status: z.enum([
-    "DRAFT",
-    "PUBLISHED",
-  ]),
 });

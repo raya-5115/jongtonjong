@@ -6,20 +6,26 @@ import { SquarePen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-export default function NewsActions({ news }) {
+import DeleteNewsDialog from "./DeleteNewsDialog";
+
+export default function NewsActions({
+  news,
+}) {
   return (
-    <div className="flex justify-end">
+    <div className="flex justify-end gap-2">
 
       <Link
         href={`/dashboard/berita/${news.id}/edit`}
       >
         <Button
-          variant="outline"
           size="icon"
+          variant="outline"
         >
-          <SquarePen className="h-4 w-4" />
+          <SquarePen size={18} />
         </Button>
       </Link>
+
+      <DeleteNewsDialog news={news} />
 
     </div>
   );
