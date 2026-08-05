@@ -44,14 +44,7 @@ export default function DeleteNewsDialog({
     <AlertDialog>
 
       <AlertDialogTrigger>
-
-        <Button
-          size="icon"
-          variant="destructive"
-        >
           <Trash2 size={18} />
-        </Button>
-
       </AlertDialogTrigger>
 
       <AlertDialogContent>
