@@ -4,6 +4,14 @@ import StatCard from "@/components/dashboard/StatCard";
 import RecentRequestTable from "@/components/dashboard/RecentRequestTable";
 import QuickActionCard from "@/components/dashboard/QuickActionCard";
 
+import {
+  Briefcase,
+  FileText,
+  Clock3,
+  Newspaper,
+  Store,
+} from "lucide-react";
+
 export default async function DashboardPage() {
   const data = await getDashboardStats();
 
@@ -25,28 +33,33 @@ export default async function DashboardPage() {
         <StatCard
           title="Layanan"
           value={data.totalServices}
+          icon={Briefcase}
         />
 
         <StatCard
           title="Pengajuan"
           value={data.totalRequests}
+          icon={FileText}
         />
 
         <StatCard
           title="Pending"
           value={data.pendingRequests}
+          icon={Clock3}
         />
 
         <StatCard
           title="Berita"
           value={data.totalNews}
+          icon={Newspaper}
         />
 
         <StatCard
           title="UMKM"
           value={data.totalUmkm}
+          icon={Store}
         />
-
+        
       </div>
 
       <div className="grid gap-6 xl:grid-cols-3">
