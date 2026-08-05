@@ -13,6 +13,8 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 
+import { getRequestStatus } from "@/lib/requestStatus";
+
 import RequestActions from "./RequestActions";
 
 export default function RequestTable({ requests }) {
@@ -25,35 +27,27 @@ export default function RequestTable({ requests }) {
           <TableHead>Layanan</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Tanggal</TableHead>
-          <TableHead className="text-right">
-            Aksi
-          </TableHead>
+          <TableHead className="text-right">Aksi</TableHead>
         </TableRow>
       </TableHeader>
 
       <TableBody>
         {requests.map((request) => (
           <TableRow key={request.id}>
-            <TableCell>
-              {request.submissionNumber}
-            </TableCell>
+            <TableCell>{request.submissionNumber}</TableCell>
 
             <TableCell>{request.fullName}</TableCell>
 
-            <TableCell>
-              {request.service.name}
-            </TableCell>
+            <TableCell>{request.service.name}</TableCell>
 
             <TableCell>
-              <Badge>
-                {request.status}
+              <Badge className={getRequestStatus(request.status).className}>
+                {getRequestStatus(request.status).label}
               </Badge>
             </TableCell>
 
             <TableCell>
-              {new Date(
-                request.createdAt
-              ).toLocaleDateString("id-ID")}
+              {new Date(request.createdAt).toLocaleDateString("id-ID")}
             </TableCell>
 
             <TableCell className="text-right">

@@ -2,8 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 
-import { serviceRequestSchema } from "@/validation/serviceRequest.validation";
-
 import {
   createServiceRequest,
   updateServiceRequest,
@@ -11,6 +9,11 @@ import {
 } from "@/services/serviceRequest.service";
 
 import { generateSubmissionNumber } from "@/lib/generateSubmissionNumber";
+
+import {
+  serviceRequestSchema,
+  updateRequestSchema,
+} from "@/validation/serviceRequest.validation";
 
 export async function createServiceRequestAction(data) {
   const validated = serviceRequestSchema.parse(data);
@@ -33,9 +36,12 @@ export async function createServiceRequestAction(data) {
 }
 
 export async function updateServiceRequestAction(id, data) {
-  await updateServiceRequest(id, data);
+  const validated = updateRequestSchema.parse(data);
+
+  await updateServiceRequest(id, validated);
 
   revalidatePath("/dashboard/pengajuan");
+  revalidatePath(`/dashboard/pengajuan/${id}`);
 
   return {
     success: true,
@@ -53,3 +59,4 @@ export async function deleteServiceRequestAction(id) {
     message: "Pengajuan berhasil dihapus.",
   };
 }
+

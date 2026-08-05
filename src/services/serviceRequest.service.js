@@ -32,8 +32,14 @@ export async function createServiceRequest(data) {
 
 export async function updateServiceRequest(id, data) {
   return prisma.serviceRequest.update({
-    where: { id },
+    where: {
+      id,
+    },
     data,
+    include: {
+      service: true,
+      attachments: true,
+    },
   });
 }
 
