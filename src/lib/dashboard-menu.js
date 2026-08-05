@@ -22,5 +22,9 @@ export const dashboardMenu = [
   {
     title: "Layanan",
     href: "/dashboard/layanan"
+  },
+  {
+    title: "Pengajuan",
+    href: "/dashboard/pengajuan",
   }
 ];
