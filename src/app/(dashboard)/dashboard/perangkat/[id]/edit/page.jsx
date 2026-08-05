@@ -2,16 +2,16 @@ import { notFound } from "next/navigation";
 
 import PerangkatForm from "@/components/perangkat/PerangkatForm";
 
-import {
-  getPerangkatById,
-} from "@/services/perangkat.service";
+import { getPerangkatById } from "@/services/perangkat.service";
 
-export default async function EditPerangkatPage({
-  params,
-}) {
-  const perangkat = await getPerangkatById(
-    params.id
-  );
+export default async function EditPerangkatPage({ params }) {
+  const { id } = await params;
+
+  if (!id) {
+    notFound();
+  }
+
+  const perangkat = await getPerangkatById(id);
 
   if (!perangkat) {
     notFound();
@@ -19,19 +19,11 @@ export default async function EditPerangkatPage({
 
   return (
     <div className="space-y-6">
-
       <div>
-
-        <h1 className="text-2xl font-bold">
-          Edit Perangkat Desa
-        </h1>
-
+        <h1 className="text-2xl font-bold">Edit Perangkat Desa</h1>
       </div>
 
-      <PerangkatForm
-        perangkat={perangkat}
-      />
-
+      <PerangkatForm perangkat={perangkat} showDelete />
     </div>
   );
 }

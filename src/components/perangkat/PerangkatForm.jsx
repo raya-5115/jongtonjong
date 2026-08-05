@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
@@ -9,6 +10,7 @@ import {
   createPerangkatAction,
   updatePerangkatAction,
 } from "@/actions/perangkat.action";
+import DeletePerangkatDialog from "./DeletePerangkatDialog";
 
 import { perangkatSchema } from "@/validation/perangkat.validation";
 
@@ -17,27 +19,21 @@ import { Input } from "@/components/ui/input";
 
 export default function PerangkatForm({
   perangkat = null,
+  showDelete = false,
 }) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-  } = useForm({
+  const { register, handleSubmit, setValue, watch } = useForm({
     resolver: zodResolver(perangkatSchema),
 
     defaultValues: {
       nama: perangkat?.nama ?? "",
       jabatan: perangkat?.jabatan ?? "",
       nik: perangkat?.nik ?? "",
-      pendidikanTerakhir:
-        perangkat?.pendidikanTerakhir ?? "",
+      pendidikanTerakhir: perangkat?.pendidikanTerakhir ?? "",
       foto: perangkat?.foto ?? "",
-      masaJabatan:
-        perangkat?.masaJabatan ?? "",
-      email: perangkat?.email ?? "",
+      masaJabatan: perangkat?.masaJabatan ?? "",
       telepon: perangkat?.telepon ?? "",
       urutan: perangkat?.urutan ?? 0,
     },
@@ -47,20 +43,13 @@ export default function PerangkatForm({
     startTransition(async () => {
       try {
         if (perangkat) {
-          await updatePerangkatAction(
-            perangkat.id,
-            data
-          );
+          const res = await updatePerangkatAction(perangkat.id, data);
 
-          toast.success(
-            "Perangkat desa berhasil diperbarui."
-          );
+          toast.success(res.message);
         } else {
-          await createPerangkatAction(data);
+          const res = await createPerangkatAction(data);
 
-          toast.success(
-            "Perangkat desa berhasil ditambahkan."
-          );
+          toast.success(res.message);
         }
         router.push("/dashboard/perangkat");
         router.refresh();
@@ -71,65 +60,33 @@ export default function PerangkatForm({
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-5"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <Input placeholder="Nama" {...register("nama")} />
 
-      <Input
-        placeholder="Nama"
-        {...register("nama")}
-      />
+      <Input placeholder="Jabatan" {...register("jabatan")} />
 
-      <Input
-        placeholder="Jabatan"
-        {...register("jabatan")}
-      />
-
-      <Input
-        placeholder="NIK"
-        {...register("nik")}
-      />
+      <Input placeholder="NIK" {...register("nik")} />
 
       <Input
         placeholder="Pendidikan Terakhir"
         {...register("pendidikanTerakhir")}
       />
 
-      <Input
-        placeholder="Masa Jabatan"
-        {...register("masaJabatan")}
-      />
+      <Input placeholder="Masa Jabatan" {...register("masaJabatan")} />
 
-      <Input
-        placeholder="Email"
-        {...register("email")}
-      />
+      <Input placeholder="Telepon" {...register("telepon")} />
 
-      <Input
-        placeholder="Telepon"
-        {...register("telepon")}
-      />
+      <Input placeholder="URL Foto" {...register("foto")} />
 
-      <Input
-        placeholder="URL Foto"
-        {...register("foto")}
-      />
+      <Input type="number" placeholder="Urutan" {...register("urutan")} />
 
-      <Input
-        type="number"
-        placeholder="Urutan"
-        {...register("urutan")}
-      />
+      <div className="flex justify-between">
+        {showDelete ? <DeletePerangkatDialog perangkat={perangkat} /> : <div />}
 
-      <Button
-        type="submit"
-        disabled={isPending}
-      >
-        {isPending
-          ? "Menyimpan..."
-          : "Simpan"}
-      </Button>
+        <Button type="submit" disabled={isPending}>
+          {isPending ? "Menyimpan..." : "Simpan"}
+        </Button>
+      </div>
     </form>
   );
 }

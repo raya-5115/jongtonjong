@@ -16,6 +16,4 @@ export const perangkatSchema = z.object({
   telepon: z.string().optional(),
 
   urutan: z.coerce.number().min(0),
-
-  isActive: z.boolean(),
 });
