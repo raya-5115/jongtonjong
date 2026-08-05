@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 
@@ -21,6 +22,8 @@ import {
 import { updateServiceRequestAction } from "@/actions/serviceRequest.action";
 
 export default function RequestProcessCard({ request }) {
+  const router = useRouter();
+
   const [status, setStatus] = useState(request.status);
 
   const [note, setNote] = useState(request.note ?? "");
@@ -36,6 +39,7 @@ export default function RequestProcessCard({ request }) {
         });
 
         toast.success(res.message);
+        router.push("/dashboard/pengajuan");
       } catch (err) {
         toast.error(err.message);
       }

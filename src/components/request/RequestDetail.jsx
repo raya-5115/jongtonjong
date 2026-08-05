@@ -1,57 +1,83 @@
 "use client";
-
 import { Badge } from "@/components/ui/badge";
 
-import RequestProcessCard from "./RequestProcessCard";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
-import { getRequestStatus } from "@/lib/requestStatus";
+import { Separator } from "@/components/ui/separator";
+
+import RequestProcessCard from "./RequestProcessCard";
 
 export default function RequestDetail({ request }) {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Detail Pengajuan</h1>
+      <Card>
+        <CardHeader>
+          <CardTitle>Detail Pengajuan</CardTitle>
 
-        <p className="text-muted-foreground">{request.submissionNumber}</p>
-      </div>
+          <p className="text-muted-foreground">{request.submissionNumber}</p>
+        </CardHeader>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Info title="Layanan" value={request.service.name} />
+        <CardContent>
+          <Badge>{request.status}</Badge>
+        </CardContent>
+      </Card>
 
-        <div>
-          <p className="text-sm text-muted-foreground">Status</p>
+      <Card>
+        <CardHeader>
+          <CardTitle>Informasi Pemohon</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-6 md:grid-cols-2">
+            <Info title="Layanan" value={request.service.name} />
 
-          <Badge className={getRequestStatus(request.status).className}>
-            {getRequestStatus(request.status).label}
-          </Badge>
-        </div>
+            <Info title="Nama" value={request.fullName} />
 
-        <Info title="Nama" value={request.fullName} />
+            <Info title="NIK" value={request.nik} />
 
-        <Info title="NIK" value={request.nik} />
+            <Info title="No. HP" value={request.phone} />
 
-        <Info title="No. HP" value={request.phone} />
+            <Info title="Alamat" value={request.address} />
+          </div>
+        </CardContent>
+      </Card>
 
-        <Info title="Alamat" value={request.address} />
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Keterangan</CardTitle>
+        </CardHeader>
 
-      <div>
-        <p className="font-medium">Keterangan</p>
+        <CardContent>
+          <p className="text-muted-foreground">{request.description || "-"}</p>
+        </CardContent>
+      </Card>
 
-        <p className="text-muted-foreground">{request.description || "-"}</p>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Lampiran</CardTitle>
+        </CardHeader>
 
-      <div>
-        <p className="font-medium mb-2">Lampiran</p>
-
-        {request.attachments.length === 0 ? (
-          <p className="text-muted-foreground">Belum ada lampiran.</p>
-        ) : (
-          request.attachments.map((file) => (
-            <div key={file.id}>{file.fileName}</div>
-          ))
-        )}
-      </div>
+        <CardContent>
+          {request.attachments.length === 0 ? (
+            <p className="text-muted-foreground">Belum ada lampiran.</p>
+          ) : (
+            <div className="space-y-3">
+              {request.attachments.map((file) => (
+                <div
+                  key={file.id}
+                  className="flex items-center justify-between rounded-lg border p-3"
+                >
+                  <span>{file.fileName}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <RequestProcessCard request={request} />
     </div>
@@ -60,10 +86,18 @@ export default function RequestDetail({ request }) {
 
 function Info({ title, value }) {
   return (
-    <div>
-      <p className="text-sm text-muted-foreground">{title}</p>
+    <div className="space-y-1">
 
-      <p className="font-medium">{value}</p>
+      <p className="text-sm text-muted-foreground">
+        {title}
+      </p>
+
+      <Separator />
+
+      <p className="font-medium break-words">
+        {value}
+      </p>
+
     </div>
   );
 }
