@@ -4,19 +4,19 @@ export const dashboardMenu = [
     href: "/dashboard"
   },
   {
-    title: "Berita",
-    href: "/dashboard/berita"
+    title: "Perangkat Desa",
+    href: "/dashboard/perangkat"
   },
   {
-    title: "Galeri",
-    href: "/dashboard/galeri"
+    title: "Berita",
+    href: "/dashboard/berita"
   },
   {
     title: "UMKM",
     href: "/dashboard/umkm"
   },
   {
-    title: "User",
+    title: "Pengguna",
     href: "/dashboard/user"
   },
   {
