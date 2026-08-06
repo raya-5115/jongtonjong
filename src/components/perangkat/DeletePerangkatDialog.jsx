@@ -1,28 +1,27 @@
 "use client";
 
 import { useTransition } from "react";
-
 import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
 
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-} from "@/components/ui/alert-dialog";
+import { deletePerangkatAction } from "@/actions/perangkat.action";
 
 import { Button } from "@/components/ui/button";
 
-import { Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
-import { deleteNewsAction } from "@/actions/news.action";
-
-export default function DeleteNewsDialog({
-  news,
+export default function DeletePerangkatDialog({
+  perangkat,
 }) {
   const [isPending, startTransition] =
     useTransition();
@@ -30,10 +29,12 @@ export default function DeleteNewsDialog({
   function handleDelete() {
     startTransition(async () => {
       try {
-        const res =
-          await deleteNewsAction(news.id);
+        const result =
+          await deletePerangkatAction(
+            perangkat.id
+          );
 
-        toast.success(res.message);
+        toast.success(result.message);
       } catch (err) {
         toast.error(err.message);
       }
@@ -44,7 +45,7 @@ export default function DeleteNewsDialog({
     <AlertDialog>
 
       <AlertDialogTrigger>
-          <Trash2 size={18} />
+        <Trash2 className="h-4 w-4" />
       </AlertDialogTrigger>
 
       <AlertDialogContent>
@@ -52,11 +53,13 @@ export default function DeleteNewsDialog({
         <AlertDialogHeader>
 
           <AlertDialogTitle>
-            Hapus Berita?
+            Hapus Perangkat Desa?
           </AlertDialogTitle>
 
           <AlertDialogDescription>
-            Berita ini akan dihapus permanen.
+            Data{" "}
+            <strong>{perangkat.nama}</strong>{" "}
+            akan dihapus secara permanen.
           </AlertDialogDescription>
 
         </AlertDialogHeader>
@@ -67,13 +70,14 @@ export default function DeleteNewsDialog({
             Batal
           </AlertDialogCancel>
 
-          <Button
-            variant="destructive"
-            disabled={isPending}
+          <AlertDialogAction
             onClick={handleDelete}
+            disabled={isPending}
           >
-            Hapus
-          </Button>
+            {isPending
+              ? "Menghapus..."
+              : "Hapus"}
+          </AlertDialogAction>
 
         </AlertDialogFooter>
 
