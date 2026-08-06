@@ -26,7 +26,7 @@ export const dashboardMenu = [
   },
   {
     title: "User",
-    href: "/dashboard/user",
+    href: "/dashboard/users",
     icon: Users,
   },
   {
