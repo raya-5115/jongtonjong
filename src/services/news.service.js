@@ -2,9 +2,6 @@ import {prisma} from "@/lib/prisma";
 
 export async function getNews() {
   return prisma.news.findMany({
-    include: {
-      author: true,
-    },
     orderBy: {
       createdAt: "desc",
     },
