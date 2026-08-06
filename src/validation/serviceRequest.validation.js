@@ -15,10 +15,10 @@ export const serviceRequestSchema = z.object({
 
   fullName: z.string().min(3, "Nama minimal 3 karakter"),
 
-  nik: z
+  nip: z
     .string()
-    .length(16, "NIK harus 16 digit")
-    .regex(/^\d+$/, "NIK hanya boleh berisi angka"),
+    .length(16, "NIP harus 16 digit")
+    .regex(/^\d+$/, "NIP hanya boleh berisi angka"),
 
   phone: z.string().min(10, "Nomor HP tidak valid"),
 

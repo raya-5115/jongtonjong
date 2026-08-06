@@ -23,7 +23,7 @@ model PerangkatDesa {
   id                 String   @id @default(cuid())
   nama               String
   jabatan            String
-  nik                String?
+  nip                String?
   telepon            String?
   pendidikanTerakhir String?
   foto               String?

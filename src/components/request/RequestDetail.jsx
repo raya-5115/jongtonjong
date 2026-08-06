@@ -37,7 +37,7 @@ export default function RequestDetail({ request }) {
 
             <Info title="Nama" value={request.fullName} />
 
-            <Info title="NIK" value={request.nik} />
+            <Info title="NIP" value={request.nip} />
 
             <Info title="No. HP" value={request.phone} />
 

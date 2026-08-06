@@ -30,7 +30,7 @@ export default function PerangkatForm({
     defaultValues: {
       nama: perangkat?.nama ?? "",
       jabatan: perangkat?.jabatan ?? "",
-      nik: perangkat?.nik ?? "",
+      nip: perangkat?.nip ?? "",
       pendidikanTerakhir: perangkat?.pendidikanTerakhir ?? "",
       foto: perangkat?.foto ?? "",
       masaJabatan: perangkat?.masaJabatan ?? "",
@@ -65,7 +65,7 @@ export default function PerangkatForm({
 
       <Input placeholder="Jabatan" {...register("jabatan")} />
 
-      <Input placeholder="NIK" {...register("nik")} />
+      <Input placeholder="NIP" {...register("nip")} />
 
       <Input
         placeholder="Pendidikan Terakhir"

@@ -5,7 +5,7 @@ export const perangkatSchema = z.object({
 
   jabatan: z.string().min(3, "Jabatan wajib diisi"),
 
-  nik: z.string().optional(),
+  nip: z.string().optional(),
 
   pendidikanTerakhir: z.string().optional(),
 
