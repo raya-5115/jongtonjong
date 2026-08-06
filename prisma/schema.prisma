@@ -16,7 +16,6 @@ model User {
   role         UserRole
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  news         News[]
 }
 
 model PerangkatDesa {
@@ -42,7 +41,6 @@ model News {
   authorId  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  author    User?    @relation(fields: [authorId], references: [id])
 }
 
 model Umkm {
@@ -105,7 +103,7 @@ model ServiceRequestAttachment {
 
 enum UserRole {
   SUPER_ADMIN
-  PERANGKAT_DESA
+  ADMIN
 }
 
 enum RequestStatus {

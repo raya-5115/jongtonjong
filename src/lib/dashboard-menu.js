@@ -1,30 +1,30 @@
 export const dashboardMenu = [
   {
     title: "Dashboard",
-    href: "/dashboard"
+    href: "/dashboard",
   },
   {
     title: "Perangkat Desa",
-    href: "/dashboard/perangkat"
+    href: "/dashboard/perangkat",
   },
   {
     title: "Berita",
-    href: "/dashboard/berita"
+    href: "/dashboard/berita",
   },
   {
     title: "UMKM",
-    href: "/dashboard/umkm"
+    href: "/dashboard/umkm",
   },
   {
     title: "Pengguna",
-    href: "/dashboard/user"
+    href: "/dashboard/users",
   },
   {
     title: "Layanan",
-    href: "/dashboard/layanan"
+    href: "/dashboard/layanan",
   },
   {
     title: "Pengajuan",
     href: "/dashboard/pengajuan",
-  }
+  },
 ];
