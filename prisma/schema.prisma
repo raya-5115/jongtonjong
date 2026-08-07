@@ -112,3 +112,25 @@ enum RequestStatus {
   FINISHED
   REJECTED
 }
+
+model Facility {
+  id          String           @id @default(cuid())
+  name        String
+  category    FacilityCategory
+  description String?
+  address     String?
+  phone       String?
+  image       String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+enum FacilityCategory {
+  PENDIDIKAN
+  KESEHATAN
+  KEAGAMAAN
+  OLAHRAGA
+  PEMERINTAHAN
+  SOSIAL
+  LAINNYA
+}

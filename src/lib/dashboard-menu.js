@@ -20,6 +20,10 @@ export const dashboardMenu = [
     href: "/dashboard/users",
   },
   {
+    title: "Fasilitas",
+    href: "/dashboard/fasilitas",
+  },
+  {
     title: "Layanan",
     href: "/dashboard/layanan",
   },
