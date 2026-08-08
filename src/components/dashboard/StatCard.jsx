@@ -22,7 +22,7 @@ export default function StatCard({
         >
           {Icon && <Icon className="h-5 w-5" />}
         </div>
-        <p className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
           {title}
         </p>
       </div>
