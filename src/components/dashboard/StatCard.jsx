@@ -15,7 +15,7 @@ export default function StatCard({
 
       <CardHeader className="flex flex-row items-center justify-between">
 
-        <CardTitle className="text-sm">
+        <CardTitle className="text-l font-bold">
           {title}
         </CardTitle>
 

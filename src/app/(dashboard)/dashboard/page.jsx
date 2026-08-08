@@ -28,36 +28,30 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
 
         <StatCard
-          title="Layanan"
-          value={data.totalServices}
-          icon={Briefcase}
-        />
-
-        <StatCard
-          title="Pengajuan"
+          title="TOTAL PENGAJUAN"
           value={data.totalRequests}
           icon={FileText}
         />
 
         <StatCard
-          title="Pending"
-          value={data.pendingRequests}
-          icon={Clock3}
-        />
-
-        <StatCard
-          title="Berita"
+          title="BERITA TERPUBLIKASI"
           value={data.totalNews}
           icon={Newspaper}
         />
 
         <StatCard
-          title="UMKM"
+          title="JUMLAH UMKM"
           value={data.totalUmkm}
           icon={Store}
+        />
+
+        <StatCard
+          title="PENGAJUAN BARU"
+          value={data.pendingRequests}
+          icon={Clock3}
         />
         
       </div>
