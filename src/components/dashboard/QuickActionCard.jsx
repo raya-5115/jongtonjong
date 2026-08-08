@@ -54,7 +54,6 @@ export default function QuickActionCard() {
         </Link>
 
         <Button
-          disabled
           className="w-full justify-start"
           variant="outline"
         >
