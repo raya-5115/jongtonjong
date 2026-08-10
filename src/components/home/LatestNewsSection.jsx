@@ -6,21 +6,21 @@ const NEWS_DATA = [
     title: "BULAT (Buah Olah Tepat)",
     excerpt: "Program inovasi pengolahan hasil pertanian dan buah lokal Desa Tonjong untuk meningkatkan nilai ekonomi warga.",
     date: "10 Agustus 2026",
-    href: "/berita",
+    href: "/berita/bulat-buah-olah-tepat",
   },
   {
     id: 2,
     title: "TASTE (Tonjong Atasi)",
     excerpt: "Kegiatan gotong royong dan aksi penanganan lingkungan bersih serta penataan fasilitas desa.",
     date: "08 Agustus 2026",
-    href: "/berita",
+    href: "/berita/taste-tonjong-atasi",
   },
   {
     id: 3,
     title: "Tonjong Update",
     excerpt: "Pembaruan informasi terkini mengenai agenda rutin pelayanan dan pembangunan infrastruktur desa.",
     date: "05 Agustus 2026",
-    href: "/berita",
+    href: "/berita/tonjong-update",
   },
 ];
 
