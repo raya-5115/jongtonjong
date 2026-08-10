@@ -19,6 +19,23 @@ export async function getNewsById(id) {
   });
 }
 
+export async function getNewsByIdOrSlug(idOrSlug) {
+  try {
+    const byId = await prisma.news.findUnique({
+      where: { id: idOrSlug },
+      include: { author: true },
+    });
+    if (byId) return byId;
+
+    return prisma.news.findUnique({
+      where: { slug: idOrSlug },
+      include: { author: true },
+    });
+  } catch (error) {
+    return null;
+  }
+}
+
 export async function createNews(data) {
   return prisma.news.create({
     data,
