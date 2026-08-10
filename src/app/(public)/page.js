@@ -4,14 +4,36 @@ import LatestNewsSection from "@/components/home/LatestNewsSection";
 import UmkmSection from "@/components/home/UmkmSection";
 import FacilitySection from "@/components/home/FacilitySection";
 
-export default function Home() {
+import { getNews } from "@/services/news.service";
+import { getUmkm } from "@/services/umkm.service";
+import { getFacilities } from "@/services/facility.service";
+
+export default async function Home() {
+  let newsList = [];
+  let umkmList = [];
+  let facilityList = [];
+
+  try {
+    const [newsData, umkmData, facilityData] = await Promise.all([
+      getNews().catch(() => []),
+      getUmkm().catch(() => []),
+      getFacilities().catch(() => []),
+    ]);
+
+    newsList = newsData ? newsData.slice(0, 3) : [];
+    umkmList = umkmData ? umkmData.slice(0, 3) : [];
+    facilityList = facilityData ? facilityData.slice(0, 3) : [];
+  } catch (error) {
+    console.error("Gagal mengambil data halaman utama:", error);
+  }
+
   return (
     <div className="flex w-full flex-col min-h-screen bg-slate-50">
       <HeroSection />
       <ShortProfileSection />
-      <LatestNewsSection />
-      <UmkmSection />
-      <FacilitySection />
+      <LatestNewsSection news={newsList} />
+      <UmkmSection umkmList={umkmList} />
+      <FacilitySection facilities={facilityList} />
     </div>
   );
 }
