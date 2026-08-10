@@ -1,0 +1,69 @@
+"use client";
+
+import Image from "next/image";
+import { Eye, Phone, Store } from "lucide-react";
+
+export default function PublicUmkmCard({ umkm, onDetailClick, onContactClick }) {
+  const { businessName, description, productImage } = umkm;
+
+  return (
+    <div className="flex flex-col h-full rounded-2xl bg-white p-4 sm:p-5 shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 group">
+      
+      {/* Product Image Box */}
+      <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#eef2fc] flex items-center justify-center mb-4 border border-indigo-50/50">
+        {productImage ? (
+          <Image
+            src={productImage}
+            alt={businessName}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center text-indigo-400/70 p-4 text-center">
+            <Store className="w-12 h-12 stroke-[1.5] mb-1 text-indigo-300" />
+            <span className="text-xs font-medium text-indigo-300/80">Foto Produk UMKM</span>
+          </div>
+        )}
+      </div>
+
+      {/* Content Section */}
+      <div className="flex flex-col flex-1">
+        {/* Business Title */}
+        <h3 className="text-xl sm:text-2xl font-bold text-[#1b365d] tracking-tight leading-snug">
+          {businessName}
+        </h3>
+
+        {/* Horizontal Divider Line */}
+        <div className="w-full h-[1.5px] bg-[#dbe5f7] my-3" />
+
+        {/* Short Description */}
+        <p className="text-sm sm:text-base text-slate-600 leading-relaxed line-clamp-3 mb-6 flex-1 font-normal">
+          {description}
+        </p>
+
+        {/* Action Buttons Row */}
+        <div className="grid grid-cols-2 gap-3 mt-auto">
+          <button
+            type="button"
+            onClick={() => onDetailClick(umkm)}
+            className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl bg-[#e8edfc] hover:bg-[#dae4f9] active:bg-[#c9d8f6] text-[#1b365d] font-semibold text-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-300 cursor-pointer"
+          >
+            <Eye className="w-4 h-4 stroke-[2.2] text-[#1b365d]" />
+            <span>Detail</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onContactClick(umkm)}
+            className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl bg-[#e8edfc] hover:bg-[#dae4f9] active:bg-[#c9d8f6] text-[#1b365d] font-semibold text-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-300 cursor-pointer"
+          >
+            <Phone className="w-4 h-4 stroke-[2.2] text-[#1b365d]" />
+            <span>Hubungi</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  );
+}
