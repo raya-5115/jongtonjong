@@ -21,14 +21,13 @@ export default function NewsDetailContent({ article }) {
 
   const formattedDate = article.createdAt
     ? new Date(article.createdAt).toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
     : "10 Agustus 2026";
 
   const authorName = article.author?.name || "Admin Desa";
-  const views = article.views || 30;
 
   // Split content into paragraphs for clean typography
   const paragraphs = article.content
@@ -38,7 +37,7 @@ export default function NewsDetailContent({ article }) {
   return (
     <div className="w-full bg-slate-50 py-8 sm:py-12">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        
+
         {/* Back Link */}
         <Link
           href="/berita"
@@ -50,7 +49,7 @@ export default function NewsDetailContent({ article }) {
 
         {/* Main Article Container */}
         <article className="overflow-hidden rounded-3xl bg-white p-5 sm:p-8 md:p-10 border border-slate-200/80 shadow-sm">
-          
+
           {/* Featured Hero Image Container */}
           <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-[#0c183a] shadow-md">
             {article.image ? (
@@ -95,11 +94,6 @@ export default function NewsDetailContent({ article }) {
             <div className="flex items-center gap-2">
               <User className="h-4 w-4 text-[#0c183a]" />
               <span>Oleh: {authorName}</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Eye className="h-4 w-4 text-[#0c183a]" />
-              <span>Dibaca {views} kali</span>
             </div>
           </div>
 

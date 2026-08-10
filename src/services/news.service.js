@@ -9,29 +9,46 @@ export async function getNews() {
 }
 
 export async function getNewsById(id) {
-  return prisma.news.findUnique({
+  const news = await prisma.news.findUnique({
     where: {
       id,
     },
-    include: {
-      author: true,
-    },
   });
+
+  if (news && news.authorId) {
+    const author = await prisma.user.findUnique({
+      where: { id: news.authorId },
+      select: { id: true, name: true, email: true },
+    });
+    return { ...news, author };
+  }
+
+  return news;
 }
 
 export async function getNewsByIdOrSlug(idOrSlug) {
   try {
-    const byId = await prisma.news.findUnique({
+    let article = await prisma.news.findUnique({
       where: { id: idOrSlug },
-      include: { author: true },
     });
-    if (byId) return byId;
 
-    return prisma.news.findUnique({
-      where: { slug: idOrSlug },
-      include: { author: true },
-    });
+    if (!article) {
+      article = await prisma.news.findUnique({
+        where: { slug: idOrSlug },
+      });
+    }
+
+    if (article && article.authorId) {
+      const author = await prisma.user.findUnique({
+        where: { id: article.authorId },
+        select: { id: true, name: true, email: true },
+      });
+      return { ...article, author };
+    }
+
+    return article;
   } catch (error) {
+    console.error("Error in getNewsByIdOrSlug:", error);
     return null;
   }
 }
