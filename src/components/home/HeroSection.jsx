@@ -35,15 +35,15 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Bottom Curve Wave Divider */}
+      {/* Bottom Curve Divider matching Vector 249.svg */}
       <div className="absolute bottom-0 left-0 right-0 z-10 w-full overflow-hidden leading-none">
         <svg
-          viewBox="0 0 1200 120"
+          viewBox="0 0 1920 1065"
           preserveAspectRatio="none"
-          className="relative block h-16 w-full text-slate-50 sm:h-24 md:h-32"
+          className="relative block h-20 w-full text-slate-50 sm:h-32 md:h-44 lg:h-56"
           fill="currentColor"
         >
-          <path d="M0,0 C150,90 350,-40 500,45 C650,130 900,10 1200,60 L1200,120 L0,120 Z"></path>
+          <path d="M -1.5 1065 H 1920 V 534 C 1920 534 1591.5 477.5 1373.5 586.5 C 1155.5 695.5 1244 870 1021.5 945 C 799 1020 651.5 869.5 374.5 870 C 97.5 870.5 -1.5 1065 -1.5 1065 Z" />
         </svg>
       </div>
     </section>
