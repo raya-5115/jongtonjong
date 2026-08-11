@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Calendar, ArrowRight } from "lucide-react";
+import { getPublicImageUrl } from "@/lib/storage-utils";
 
 export default function FeaturedNewsSlider({ news = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -18,8 +19,6 @@ export default function FeaturedNewsSlider({ news = [] }) {
     return now - itemTime <= SEVEN_DAYS_MS;
   });
 
-  // If multiple items within last 7 days -> slider mode
-  // Otherwise -> single latest news item
   const featuredItems =
     recentNews.length > 1
       ? recentNews
@@ -46,6 +45,7 @@ export default function FeaturedNewsSlider({ news = [] }) {
   }
 
   const currentItem = featuredItems[currentIndex] || featuredItems[0];
+  const imageUrl = getPublicImageUrl(currentItem.image);
 
   const handlePrev = () => {
     setCurrentIndex((prev) =>
@@ -65,7 +65,6 @@ export default function FeaturedNewsSlider({ news = [] }) {
           Terbaru dari Tonjong
         </h2>
 
-        {/* Carousel Arrow Controls (only visible if slider mode active) */}
         {isSlider && (
           <div className="flex items-center gap-2">
             <button
@@ -94,9 +93,9 @@ export default function FeaturedNewsSlider({ news = [] }) {
           
           {/* Card Image */}
           <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-indigo-100 border border-slate-200/60 md:col-span-6 lg:col-span-5 shrink-0">
-            {currentItem.image ? (
+            {imageUrl ? (
               <Image
-                src={currentItem.image}
+                src={imageUrl}
                 alt={currentItem.title}
                 fill
                 className="object-cover transition-transform duration-300 hover:scale-105"
@@ -146,7 +145,7 @@ export default function FeaturedNewsSlider({ news = [] }) {
 
         </div>
 
-        {/* Slide Indicator Dots (if multiple items) */}
+        {/* Slide Indicator Dots */}
         {isSlider && (
           <div className="mt-6 flex items-center justify-center gap-2">
             {featuredItems.map((_, idx) => (
