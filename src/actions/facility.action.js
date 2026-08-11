@@ -122,30 +122,34 @@ export async function updateFacilityAction(id, formData) {
 }
 
 export async function deleteFacilityAction(id) {
-  const existing = await prisma.facility.findUnique({
-    where: { id },
+  if (!id) {
+    throw new Error("ID fasilitas tidak ditemukan.");
+  }
+
+  const facility = await prisma.facility.findUnique({
+    where: {
+      id,
+    },
   });
 
-  if (!existing) {
+  if (!facility) {
     throw new Error("Fasilitas tidak ditemukan.");
   }
 
-  if (existing.image) {
+  await prisma.facility.delete({
+    where: {
+      id,
+    },
+  });
+
+  if (facility.image) {
     await deleteFile({
       bucket: "images",
-      path: existing.image,
+      path: facility.image,
     });
   }
 
-  await prisma.facility.delete({
-    where: { id },
-  });
-
-  revalidatePath("/dashboard/fasilitas");
-  revalidatePath("/fasilitas");
-
   return {
     success: true,
-    message: "Fasilitas berhasil dihapus.",
   };
 }
