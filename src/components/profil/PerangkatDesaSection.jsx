@@ -56,6 +56,7 @@ export default async function PerangkatDesaSection() {
                       alt={item.nama}
                       fill
                       className="object-cover"
+                      unoptimized={true}
                     />
                   </div>
                 ) : (

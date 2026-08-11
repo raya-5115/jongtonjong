@@ -82,6 +82,7 @@ export default function FacilityDetailModal({ facility, isOpen, onClose }) {
                 alt={facility.name}
                 fill
                 className="object-cover"
+                unoptimized={true}
               />
             ) : (
               <div className="flex flex-col items-center text-indigo-300">

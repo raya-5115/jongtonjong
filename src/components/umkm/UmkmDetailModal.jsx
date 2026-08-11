@@ -80,6 +80,7 @@ export default function UmkmDetailModal({ umkm, isOpen, onClose }) {
                 alt={umkm.businessName}
                 fill
                 className="object-cover"
+                unoptimized={true}
               />
             ) : (
               <div className="flex flex-col items-center text-indigo-300">

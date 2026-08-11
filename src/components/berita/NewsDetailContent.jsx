@@ -61,6 +61,7 @@ export default function NewsDetailContent({ article }) {
                 fill
                 className="object-cover object-center"
                 priority
+                unoptimized={true}
               />
             ) : (
               <Image

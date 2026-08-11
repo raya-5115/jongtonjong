@@ -27,6 +27,7 @@ export default function NewsGrid({ newsList = [] }) {
                     alt={item.title}
                     fill
                     className="object-cover"
+                    unoptimized={true}
                   />
                 ) : (
                   <svg className="h-10 w-10 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
