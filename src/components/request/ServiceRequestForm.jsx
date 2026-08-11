@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { createServiceRequestAction } from "@/actions/serviceRequest.action";
 import {
   UploadCloud,
@@ -13,7 +14,25 @@ import {
   FileCheck,
   X,
   FileIcon,
+  Search,
 } from "lucide-react";
+
+function formatErrorMessage(rawMessage) {
+  if (!rawMessage) return "";
+  if (typeof rawMessage !== "string") return String(rawMessage);
+
+  if (rawMessage.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(rawMessage);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.map((item) => item.message).filter(Boolean).join(". ");
+      }
+    } catch (e) {
+      // Ignore
+    }
+  }
+  return rawMessage;
+}
 
 export default function ServiceRequestForm({ servicesList = [] }) {
   const [formData, setFormData] = useState({
@@ -43,7 +62,6 @@ export default function ServiceRequestForm({ servicesList = [] }) {
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const newFiles = Array.from(e.target.files);
-      // Filter out files larger than 10MB
       const validFiles = newFiles.filter((file) => {
         if (file.size > 10 * 1024 * 1024) {
           alert(`File "${file.name}" melebihi batas 10 MB.`);
@@ -78,7 +96,6 @@ export default function ServiceRequestForm({ servicesList = [] }) {
       postData.append("serviceId", formData.serviceId);
       postData.append("description", formData.description || "");
 
-      // Append all selected document files
       selectedFiles.forEach((file) => {
         postData.append("files", file);
       });
@@ -89,6 +106,7 @@ export default function ServiceRequestForm({ servicesList = [] }) {
         setSuccessData({
           submissionNumber: res.submissionNumber,
           fullName: formData.fullName,
+          nik: formData.nik,
         });
         // Reset form
         setFormData({
@@ -101,10 +119,10 @@ export default function ServiceRequestForm({ servicesList = [] }) {
         });
         setSelectedFiles([]);
       } else {
-        setErrorMsg(res.message || "Gagal membuat pengajuan.");
+        setErrorMsg(formatErrorMessage(res.message || "Gagal membuat pengajuan."));
       }
     } catch (err) {
-      setErrorMsg(err.message || "Terjadi kesalahan saat mengirim pengajuan.");
+      setErrorMsg(formatErrorMessage(err.message || "Terjadi kesalahan saat mengirim pengajuan."));
     } finally {
       setLoading(false);
     }
@@ -119,21 +137,37 @@ export default function ServiceRequestForm({ servicesList = [] }) {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto space-y-6">
       
+      {/* Banner Link to Cek Status */}
+      <div className="p-4 rounded-2xl bg-indigo-50/80 border border-indigo-100 flex flex-wrap items-center justify-between gap-3 text-sm text-indigo-900">
+        <div className="flex items-center gap-2">
+          <Search className="w-4 h-4 text-indigo-600 shrink-0" />
+          <span>Sudah pernah mengajukan layanan sebelumnya?</span>
+        </div>
+        <Link
+          href="/layanan/cek"
+          className="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-white border border-indigo-200 text-indigo-700 font-bold text-xs hover:bg-indigo-100/60 transition shadow-2xs"
+        >
+          <span>Cek Status Pengajuan &rarr;</span>
+        </Link>
+      </div>
+
       {/* Form Container */}
       <form
         onSubmit={handleSubmit}
         className="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-slate-100"
       >
         
-        {/* Error Alert if any */}
+        {/* Error Alert Box */}
         {errorMsg && (
-          <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 flex items-start gap-3 text-rose-800 text-sm">
+          <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 flex items-start gap-3 text-rose-800 text-sm animate-in fade-in">
             <AlertCircle className="w-5 h-5 shrink-0 text-rose-600 mt-0.5" />
             <div>
               <p className="font-bold">Gagal Mengirim Pengajuan</p>
-              <p className="mt-0.5 text-rose-700">{errorMsg}</p>
+              <p className="mt-1 text-rose-700 font-medium leading-relaxed">
+                {formatErrorMessage(errorMsg)}
+              </p>
             </div>
           </div>
         )}
@@ -279,7 +313,7 @@ export default function ServiceRequestForm({ servicesList = [] }) {
             />
           </div>
 
-          {/* Upload Dokumen Dropzone (Multiple Files Support) */}
+          {/* Upload Dokumen Dropzone */}
           <div className="space-y-3">
             <label className="block text-sm font-bold text-[#1b365d]">
               Upload Dokumen Lampiran (Bisa Lebih dari 1 File)
@@ -360,23 +394,24 @@ export default function ServiceRequestForm({ servicesList = [] }) {
       {/* Success Modal Popup */}
       {successData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 text-center">
+          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 text-center space-y-4">
             
-            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
               <CheckCircle2 className="w-10 h-10" />
             </div>
 
-            <h3 className="text-2xl font-extrabold text-[#1b365d]">
-              Pengajuan Berhasil!
-            </h3>
-
-            <p className="text-sm text-slate-600 mt-2">
-              Pengajuan surat/layanan atas nama <span className="font-bold text-slate-900">{successData.fullName}</span> telah terdaftar beserta dokumen lampirannya.
-            </p>
+            <div>
+              <h3 className="text-2xl font-extrabold text-[#1b365d]">
+                Pengajuan Berhasil!
+              </h3>
+              <p className="text-sm text-slate-600 mt-1">
+                Pengajuan surat/layanan atas nama <span className="font-bold text-slate-900">{successData.fullName}</span> telah terdaftar.
+              </p>
+            </div>
 
             {/* Submission Number Box */}
-            <div className="my-6 p-4 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-between gap-3">
-              <div className="text-left">
+            <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-between gap-3 text-left">
+              <div>
                 <p className="text-xs font-semibold text-indigo-500 uppercase tracking-wider">
                   Nomor Registrasi
                 </p>
@@ -404,17 +439,26 @@ export default function ServiceRequestForm({ servicesList = [] }) {
               </button>
             </div>
 
-            <p className="text-xs text-slate-400 leading-relaxed mb-6">
-              Simpan nomor registrasi di atas untuk melacak status pengajuan Anda ke pihak desa.
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Simpan nomor registrasi di atas untuk melacak status pengajuan Anda secara berkala.
             </p>
 
-            <button
-              type="button"
-              onClick={() => setSuccessData(null)}
-              className="w-full py-3 rounded-xl bg-[#1c365d] hover:bg-[#132746] text-white font-bold text-sm transition-colors cursor-pointer"
-            >
-              Tutup
-            </button>
+            <div className="flex flex-col gap-2 pt-2">
+              <Link
+                href={`/layanan/cek?ticket=${encodeURIComponent(successData.submissionNumber)}&nik=${encodeURIComponent(successData.nik)}`}
+                className="w-full py-3 rounded-xl bg-[#1c365d] hover:bg-[#132746] text-white font-bold text-sm transition-colors text-center inline-block"
+              >
+                Cek Status Pengajuan Ini &rarr;
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => setSuccessData(null)}
+                className="w-full py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-xs transition"
+              >
+                Tutup
+              </button>
+            </div>
 
           </div>
         </div>

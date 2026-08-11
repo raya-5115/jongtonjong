@@ -1,4 +1,4 @@
-import {prisma} from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 export async function getServiceRequests() {
   return prisma.serviceRequest.findMany({
@@ -63,3 +63,27 @@ export async function getServiceRequestBySubmissionNumber(
   });
 }
 
+export async function getServiceRequestBySubmissionAndNik(
+  submissionNumber,
+  nik
+) {
+  if (!submissionNumber || !nik) {
+    return null;
+  }
+
+  return prisma.serviceRequest.findFirst({
+    where: {
+      submissionNumber: {
+        equals: submissionNumber.trim(),
+        mode: "insensitive",
+      },
+      nik: {
+        equals: nik.trim(),
+      },
+    },
+    include: {
+      service: true,
+      attachments: true,
+    },
+  });
+}
