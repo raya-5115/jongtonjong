@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Image from "next/image";
 import { X, MapPin, Phone, Building2, Tag } from "lucide-react";
 import { CATEGORY_LABELS } from "./PublicFacilityCard";
+import { getPublicImageUrl } from "@/lib/storage-utils";
 
 export default function FacilityDetailModal({ facility, isOpen, onClose }) {
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function FacilityDetailModal({ facility, isOpen, onClose }) {
   if (!isOpen || !facility) return null;
 
   const categoryLabel = CATEGORY_LABELS[facility.category] || facility.category || "Fasilitas";
+  const imageUrl = getPublicImageUrl(facility.image);
 
   const formatPhoneNumber = (phone) => {
     if (!phone) return "";
@@ -74,9 +76,9 @@ export default function FacilityDetailModal({ facility, isOpen, onClose }) {
           
           {/* Image Box */}
           <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl overflow-hidden bg-[#eef2fc] border border-indigo-50 flex items-center justify-center">
-            {facility.image ? (
+            {imageUrl ? (
               <Image
-                src={facility.image}
+                src={imageUrl}
                 alt={facility.name}
                 fill
                 className="object-cover"

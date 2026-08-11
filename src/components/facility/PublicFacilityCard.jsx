@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Eye, Phone, Building2 } from "lucide-react";
+import { getPublicImageUrl } from "@/lib/storage-utils";
 
 export const CATEGORY_LABELS = {
   PENDIDIKAN: "Pendidikan",
@@ -17,6 +18,7 @@ export default function PublicFacilityCard({ facility, onDetailClick, onContactC
   const { name, category, description, image } = facility;
 
   const categoryLabel = CATEGORY_LABELS[category] || category || "Fasilitas";
+  const imageUrl = getPublicImageUrl(image);
 
   return (
     <div className="flex flex-col h-full rounded-2xl bg-white p-4 sm:p-5 shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 group">
@@ -24,14 +26,14 @@ export default function PublicFacilityCard({ facility, onDetailClick, onContactC
       {/* Facility Image Box */}
       <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#eef2fc] flex items-center justify-center mb-4 border border-indigo-50/50">
         
-        {/* Category Badge on Top Left (Matching Mockup) */}
+        {/* Category Badge on Top Left */}
         <div className="absolute top-3 left-3 z-10 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-lg shadow-sm border border-slate-100 text-slate-800 font-semibold text-xs tracking-tight">
           {categoryLabel}
         </div>
 
-        {image ? (
+        {imageUrl ? (
           <Image
-            src={image}
+            src={imageUrl}
             alt={name}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
