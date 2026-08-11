@@ -38,7 +38,7 @@ export default function RequestTable({ requests }) {
 
             <TableCell>{request.fullName}</TableCell>
 
-            <TableCell>{request.service.name}</TableCell>
+            <TableCell>{request.service?.name || "-"}</TableCell>
 
             <TableCell>
               <Badge className={getRequestStatus(request.status).className}>

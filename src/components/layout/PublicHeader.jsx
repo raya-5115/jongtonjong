@@ -59,7 +59,7 @@ export default function PublicHeader() {
           href="/"
           className="flex items-center gap-3 group transition-transform duration-200 hover:opacity-95"
         >
-          <div className="relative h-14 w-64 sm:h-16 sm:w-80 md:h-20 md:w-[420px] shrink-0">
+          <div className="relative h-10 w-64 sm:h-12 sm:w-80 md:h-14 md:w-[420px] shrink-0">
             <Image
               src="/logo-sukabumi.png"
               alt="Logo Desa Tonjong"

@@ -99,6 +99,7 @@ export default function FeaturedNewsSlider({ news = [] }) {
                 alt={currentItem.title}
                 fill
                 className="object-cover transition-transform duration-300 hover:scale-105"
+                unoptimized={true}
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-indigo-300">

@@ -11,7 +11,13 @@ export default async function RequestDetailPage({ params }) {
     notFound();
   }
 
-  const request = await getServiceRequestById(id);
+  let request = null;
+
+  try {
+    request = await getServiceRequestById(id);
+  } catch (error) {
+    console.error(`Gagal mengambil detail pengajuan ID ${id}:`, error);
+  }
 
   if (!request) {
     notFound();

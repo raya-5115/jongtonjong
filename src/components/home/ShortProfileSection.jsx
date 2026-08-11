@@ -1,22 +1,45 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+"use client";
 
-export default function ShortProfileSection() {
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowRight } from "lucide-react";
+import { getPublicImageUrl } from "@/lib/storage-utils";
+
+export default function ShortProfileSection({ profile }) {
+  const villageName = profile?.villageName || "Desa Tonjong";
+  const title = profile?.title || "Mengenal Desa Tonjong";
+  const imageUrl = profile?.image
+    ? getPublicImageUrl(profile.image)
+    : "/kantor-desa.png";
+
+  const [hasError, setHasError] = useState(false);
+  const [prevUrl, setPrevUrl] = useState(imageUrl);
+
+  if (prevUrl !== imageUrl) {
+    setPrevUrl(imageUrl);
+    setHasError(false);
+  }
+
+  const displaySrc = hasError ? "/kantor-desa.png" : (imageUrl);
+
+  const descriptionText =
+    profile?.description?.split("\n")[0]
+
   return (
     <section className="w-full bg-slate-50 py-12 sm:py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center md:gap-12 lg:gap-16">
-          
           {/* Left Column: Image Card */}
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-indigo-50/80 border border-indigo-100/80 shadow-sm flex items-center justify-center">
-            <div className="p-8 text-center">
-              <div className="mx-auto h-16 w-16 rounded-full bg-indigo-100 flex items-center justify-center text-[#0c183a]">
-                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4" />
-                </svg>
-              </div>
-              <p className="mt-3 text-sm font-medium text-slate-500">Foto Kantor & Wilayah Desa Tonjong</p>
-            </div>
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-indigo-50/80 border border-indigo-100/80 shadow-sm">
+            <Image
+              src={displaySrc}
+              alt={`Foto Kantor ${villageName}`}
+              fill
+              className="object-cover object-center"
+              unoptimized={true}
+              onError={() => setHasError(true)}
+            />
           </div>
 
           {/* Right Column: Content */}
@@ -24,13 +47,13 @@ export default function ShortProfileSection() {
             <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0c183a]">
               PROFIL SINGKAT
             </span>
-            
+
             <h2 className="text-2xl font-extrabold text-[#0c183a] sm:text-3xl lg:text-4xl">
-              Mengenal Desa Tonjong
+              {title}
             </h2>
-            
-            <p className="text-sm sm:text-base leading-relaxed text-slate-600">
-              Desa Tonjong adalah desa yang terletak di Kecamatan Palabuhanratu, Kabupaten Sukabumi, Jawa Barat. Berkomitmen untuk mewujudkan tata kelola pemerintahan desa yang transparan, profesional, serta memberikan pelayanan publik terbaik demi kesejahteraan masyarakat.
+
+            <p className="text-sm sm:text-base leading-relaxed text-slate-600 line-clamp-4">
+              {descriptionText}
             </p>
 
             <div className="pt-2">
@@ -43,7 +66,6 @@ export default function ShortProfileSection() {
               </Link>
             </div>
           </div>
-
         </div>
       </div>
     </section>

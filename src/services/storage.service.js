@@ -5,6 +5,8 @@ import crypto from "crypto";
 
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
+  "image/jpg",
+  "image/pjpeg",
   "image/png",
   "image/webp",
 ];
@@ -16,9 +18,13 @@ export function validateImage(file) {
     throw new Error("Gambar belum dipilih.");
   }
 
-  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+  const isAllowedType =
+    ALLOWED_IMAGE_TYPES.includes(file.type) ||
+    /\.(jpg|jpeg|png|webp)$/i.test(file.name);
+
+  if (!isAllowedType) {
     throw new Error(
-      "Format gambar harus JPG, PNG, atau WebP."
+      "Format gambar harus JPG, JPEG, PNG, atau WebP."
     );
   }
 
@@ -35,17 +41,18 @@ export async function uploadImage({
 }) {
   validateImage(file);
 
-  const extension = getExtension(file.type);
-
+  const extension = getExtension(file);
   const fileName = `${crypto.randomUUID()}.${extension}`;
-
   const path = `${folder}/${fileName}`;
+
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
 
   const { data, error } = await supabaseStorage.storage
     .from("images")
-    .upload(path, file, {
-      contentType: file.type,
-      upsert: false,
+    .upload(path, buffer, {
+      contentType: file.type || "image/jpeg",
+      upsert: true,
     });
 
   if (error) {
@@ -65,7 +72,6 @@ export async function uploadDocument({
     throw new Error("File dokumen tidak valid.");
   }
 
-  // Maksimal 10 MB per dokumen
   if (file.size > 10 * 1024 * 1024) {
     throw new Error(`Ukuran file "${file.name}" melebihi batas 10 MB.`);
   }
@@ -124,12 +130,19 @@ export function getPublicImageUrl(path) {
   return data.publicUrl;
 }
 
-function getExtension(contentType) {
+function getExtension(file) {
+  if (file && file.name) {
+    const ext = file.name.split(".").pop()?.toLowerCase();
+    if (ext) return ext;
+  }
+
   const extensions = {
     "image/jpeg": "jpg",
+    "image/jpg": "jpg",
+    "image/pjpeg": "jpg",
     "image/png": "png",
     "image/webp": "webp",
   };
 
-  return extensions[contentType];
+  return extensions[file?.type] || "jpg";
 }

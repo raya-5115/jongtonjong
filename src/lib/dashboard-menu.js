@@ -7,6 +7,7 @@ import {
   Building2,
   Briefcase,
   FileText,
+  Landmark,
 } from "lucide-react";
 
 export const dashboardMenu = [
@@ -14,6 +15,11 @@ export const dashboardMenu = [
     title: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Profil Desa",
+    href: "/dashboard/profil",
+    icon: Landmark,
   },
   {
     title: "Perangkat Desa",
