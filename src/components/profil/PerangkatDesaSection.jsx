@@ -1,6 +1,7 @@
 import { User } from "lucide-react";
 import Image from "next/image";
 import { getPerangkat } from "@/services/perangkat.service";
+import { getPublicImageUrl } from "@/lib/storage-utils";
 
 const FALLBACK_PERANGKAT = [
   { id: "1", nama: "Isep Firdaos", jabatan: "KEPALA DESA" },
@@ -37,40 +38,44 @@ export default async function PerangkatDesaSection() {
           </h2>
         </div>
 
-        {/* 3 Column x 2 Row Grid */}
+        {/* Grid Card Perangkat Desa */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 md:gap-8">
-          {listPerangkat.map((item) => (
-            <div
-              key={item.id}
-              className="flex flex-col items-center justify-center rounded-xl border-2 border-[#0c183a]/80 bg-white p-8 text-center shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
-            >
-              {/* Photo or Solid Silhouette Avatar */}
-              {item.foto ? (
-                <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-[#0c183a]">
-                  <Image
-                    src={item.foto}
-                    alt={item.nama}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="flex h-20 w-20 items-center justify-center text-[#0c183a]">
-                  <User className="h-16 w-16 fill-[#0c183a] stroke-none" />
-                </div>
-              )}
+          {listPerangkat.map((item) => {
+            const imageUrl = getPublicImageUrl(item.foto);
 
-              {/* Official Name */}
-              <h3 className="mt-4 text-xl font-extrabold text-[#0c183a]">
-                {item.nama}
-              </h3>
+            return (
+              <div
+                key={item.id}
+                className="flex flex-col items-center justify-center rounded-xl border-2 border-[#0c183a]/80 bg-white p-8 text-center shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+              >
+                {/* Photo or Avatar */}
+                {imageUrl ? (
+                  <div className="relative h-24 w-24 overflow-hidden rounded-full border-2 border-[#0c183a] shadow-xs">
+                    <Image
+                      src={imageUrl}
+                      alt={item.nama}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-[#0c183a] bg-indigo-50 text-[#0c183a]">
+                    <User className="h-16 w-16 fill-[#0c183a] stroke-none" />
+                  </div>
+                )}
 
-              {/* Official Jabatan */}
-              <p className="mt-1 text-xs font-bold uppercase tracking-wider text-[#1a3059]">
-                {item.jabatan}
-              </p>
-            </div>
-          ))}
+                {/* Official Name */}
+                <h3 className="mt-4 text-xl font-extrabold text-[#0c183a]">
+                  {item.nama}
+                </h3>
+
+                {/* Official Jabatan */}
+                <p className="mt-1 text-xs font-bold uppercase tracking-wider text-[#1a3059]">
+                  {item.jabatan}
+                </p>
+              </div>
+            );
+          })}
         </div>
 
       </div>
