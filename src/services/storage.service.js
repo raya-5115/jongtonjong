@@ -107,14 +107,23 @@ export async function deleteFile({
     return;
   }
 
-  const { error } = await supabaseStorage.storage
-    .from(bucket)
-    .remove([path]);
+  const cleanPath = path.startsWith("/") ? path.slice(1) : path;
 
-  if (error) {
-    throw new Error(
-      `Gagal menghapus file: ${error.message}`
-    );
+  // Don't attempt to delete local public static assets
+  if (!cleanPath.includes("/")) {
+    return;
+  }
+
+  try {
+    const { error } = await supabaseStorage.storage
+      .from(bucket)
+      .remove([cleanPath]);
+
+    if (error) {
+      console.error("Gagal menghapus file dari storage:", error.message);
+    }
+  } catch (err) {
+    console.error("Error saat menghapus file storage:", err);
   }
 }
 
