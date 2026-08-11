@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import Image from "next/image";
+import { Store } from "lucide-react";
 
 import {
   Table,
@@ -10,82 +11,76 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-import { Button } from "@/components/ui/button";
+import { getPublicImageUrl } from "@/lib/storage-utils";
 
 import UmkmActions from "./UmkmActions";
 
-export default function UmkmTable({
-  data,
-}) {
+export default function UmkmTable({ data }) {
+  if (data.length === 0) {
+    return (
+      <div className="rounded-lg border p-8 text-center bg-white shadow-xs">
+        <p className="text-muted-foreground">Belum ada data UMKM.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="rounded-lg border">
+    <div className="rounded-xl border border-slate-200 bg-white shadow-xs overflow-hidden">
       <Table>
         <TableHeader>
           <TableRow>
-
-            <TableHead>
-              Nama Usaha
-            </TableHead>
-
-            <TableHead>
-              Pemilik
-            </TableHead>
-
-            <TableHead>
-              Telepon
-            </TableHead>
-
-            <TableHead>
-              Alamat
-            </TableHead>
-
-            <TableHead className="text-right">
-              Aksi
-            </TableHead>
-
+            <TableHead className="w-16">Foto</TableHead>
+            <TableHead>Nama Usaha</TableHead>
+            <TableHead>Pemilik</TableHead>
+            <TableHead>Telepon</TableHead>
+            <TableHead>Alamat</TableHead>
+            <TableHead className="text-right">Aksi</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
+          {data.map((item) => {
+            const imageUrl = getPublicImageUrl(item.productImage);
 
-          {data.length === 0 ? (
-            <TableRow>
-              <TableCell
-                colSpan={5}
-                className="text-center py-8"
-              >
-                Belum ada data UMKM.
-              </TableCell>
-            </TableRow>
-          ) : (
-            data.map((item) => (
+            return (
               <TableRow key={item.id}>
+                <TableCell>
+                  <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center">
+                    {imageUrl ? (
+                      <Image
+                        src={imageUrl}
+                        alt={item.businessName}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <Store className="w-5 h-5 text-slate-400" />
+                    )}
+                  </div>
+                </TableCell>
 
-                <TableCell className="font-medium">
+                <TableCell className="font-medium text-slate-900">
                   {item.businessName}
                 </TableCell>
 
-                <TableCell>
+                <TableCell className="text-slate-700">
                   {item.ownerName}
                 </TableCell>
 
-                <TableCell>
+                <TableCell className="text-slate-600">
                   {item.phone}
                 </TableCell>
 
-                <TableCell>
+                <TableCell className="text-slate-600">
                   {item.address}
                 </TableCell>
 
                 <TableCell className="text-right">
                   <UmkmActions umkm={item} />
                 </TableCell>
-
               </TableRow>
-            ))
-          )}
-
+            );
+          })}
         </TableBody>
       </Table>
     </div>

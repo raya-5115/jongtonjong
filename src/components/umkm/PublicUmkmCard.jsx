@@ -2,18 +2,20 @@
 
 import Image from "next/image";
 import { Eye, Phone, Store } from "lucide-react";
+import { getPublicImageUrl } from "@/lib/storage-utils";
 
 export default function PublicUmkmCard({ umkm, onDetailClick, onContactClick }) {
   const { businessName, description, productImage } = umkm;
+  const imageUrl = getPublicImageUrl(productImage);
 
   return (
     <div className="flex flex-col h-full rounded-2xl bg-white p-4 sm:p-5 shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 group">
       
       {/* Product Image Box */}
       <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#eef2fc] flex items-center justify-center mb-4 border border-indigo-50/50">
-        {productImage ? (
+        {imageUrl ? (
           <Image
-            src={productImage}
+            src={imageUrl}
             alt={businessName}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"

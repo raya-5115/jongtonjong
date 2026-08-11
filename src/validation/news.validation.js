@@ -5,9 +5,13 @@ export const newsSchema = z.object({
     .string()
     .min(5, "Judul minimal 5 karakter"),
 
+  slug: z
+    .string()
+    .optional(),
+
   content: z
     .string()
-    .min(20, "Konten terlalu pendek"),
+    .min(10, "Isi berita minimal 10 karakter"),
 
   image: z.string().optional(),
 });

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { X, MapPin, User, Phone, Map, Store, MessageCircle } from "lucide-react";
+import { getPublicImageUrl } from "@/lib/storage-utils";
 
 export default function UmkmDetailModal({ umkm, isOpen, onClose }) {
   useEffect(() => {
@@ -20,6 +21,8 @@ export default function UmkmDetailModal({ umkm, isOpen, onClose }) {
   }, [isOpen, onClose]);
 
   if (!isOpen || !umkm) return null;
+
+  const imageUrl = getPublicImageUrl(umkm.productImage);
 
   const formatPhoneNumber = (phone) => {
     if (!phone) return "";
@@ -59,7 +62,7 @@ export default function UmkmDetailModal({ umkm, isOpen, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors focus:outline-none"
+            className="p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
             aria-label="Tutup modal"
           >
             <X className="w-5 h-5" />
@@ -71,9 +74,9 @@ export default function UmkmDetailModal({ umkm, isOpen, onClose }) {
           
           {/* Image */}
           <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl overflow-hidden bg-[#eef2fc] border border-indigo-50 flex items-center justify-center">
-            {umkm.productImage ? (
+            {imageUrl ? (
               <Image
-                src={umkm.productImage}
+                src={imageUrl}
                 alt={umkm.businessName}
                 fill
                 className="object-cover"

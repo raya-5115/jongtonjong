@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Calendar, User, Eye } from "lucide-react";
+import { ArrowLeft, Calendar, User } from "lucide-react";
+import { getPublicImageUrl } from "@/lib/storage-utils";
 
 export default function NewsDetailContent({ article }) {
   if (!article) {
@@ -21,13 +22,14 @@ export default function NewsDetailContent({ article }) {
 
   const formattedDate = article.createdAt
     ? new Date(article.createdAt).toLocaleDateString("id-ID", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    })
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
     : "10 Agustus 2026";
 
   const authorName = article.author?.name || "Admin Desa";
+  const imageUrl = getPublicImageUrl(article.image);
 
   // Split content into paragraphs for clean typography
   const paragraphs = article.content
@@ -52,9 +54,9 @@ export default function NewsDetailContent({ article }) {
 
           {/* Featured Hero Image Container */}
           <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-[#0c183a] shadow-md">
-            {article.image ? (
+            {imageUrl ? (
               <Image
-                src={article.image}
+                src={imageUrl}
                 alt={article.title}
                 fill
                 className="object-cover object-center"
