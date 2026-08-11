@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Eye, PhoneCall } from "lucide-react";
+import { getPublicImageUrl } from "@/lib/storage-utils";
 
 function formatCategory(cat) {
   if (!cat) return "Fasilitas";
@@ -29,6 +30,7 @@ export default function FacilitySection({ facilities = [] }) {
             {facilities.map((item) => {
               const phoneClean = item.phone ? item.phone.replace(/[^0-9]/g, "") : "";
               const waUrl = phoneClean ? `https://wa.me/${phoneClean}` : "#";
+              const imageUrl = getPublicImageUrl(item.image);
 
               return (
                 <div
@@ -40,9 +42,9 @@ export default function FacilitySection({ facilities = [] }) {
                     <span className="absolute top-3 left-3 z-10 rounded-md bg-[#0c183a]/80 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
                       {formatCategory(item.category)}
                     </span>
-                    {item.image ? (
+                    {imageUrl ? (
                       <Image
-                        src={item.image}
+                        src={imageUrl}
                         alt={item.name}
                         fill
                         className="object-cover object-center"

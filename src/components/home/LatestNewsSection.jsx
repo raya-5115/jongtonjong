@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { getPublicImageUrl } from "@/lib/storage-utils";
 
 export default function LatestNewsSection({ news = [] }) {
   return (
@@ -23,13 +24,14 @@ export default function LatestNewsSection({ news = [] }) {
             {news.map((item) => {
               const formattedDate = item.createdAt
                 ? new Date(item.createdAt).toLocaleDateString("id-ID", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })
                 : "";
 
               const newsHref = `/berita/${item.slug || item.id}`;
+              const imageUrl = getPublicImageUrl(item.image);
 
               return (
                 <article
@@ -38,9 +40,9 @@ export default function LatestNewsSection({ news = [] }) {
                 >
                   {/* Card Image */}
                   <div className="relative aspect-[16/9] w-full bg-indigo-50/80 border-b border-indigo-100 flex items-center justify-center text-slate-400 overflow-hidden">
-                    {item.image ? (
+                    {imageUrl ? (
                       <Image
-                        src={item.image}
+                        src={imageUrl}
                         alt={item.title}
                         fill
                         className="object-cover object-center"
