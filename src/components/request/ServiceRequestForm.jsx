@@ -1,8 +1,38 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { createServiceRequestAction } from "@/actions/serviceRequest.action";
-import { UploadCloud, CheckCircle2, AlertCircle, Copy, Check, FileText, Loader2 } from "lucide-react";
+import {
+  UploadCloud,
+  CheckCircle2,
+  AlertCircle,
+  Copy,
+  Check,
+  FileText,
+  Loader2,
+  FileCheck,
+  X,
+  FileIcon,
+  Search,
+} from "lucide-react";
+
+function formatErrorMessage(rawMessage) {
+  if (!rawMessage) return "";
+  if (typeof rawMessage !== "string") return String(rawMessage);
+
+  if (rawMessage.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(rawMessage);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.map((item) => item.message).filter(Boolean).join(". ");
+      }
+    } catch (e) {
+      // Ignore
+    }
+  }
+  return rawMessage;
+}
 
 export default function ServiceRequestForm({ servicesList = [] }) {
   const [formData, setFormData] = useState({
@@ -14,11 +44,14 @@ export default function ServiceRequestForm({ servicesList = [] }) {
     description: "",
   });
 
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successData, setSuccessData] = useState(null);
   const [copied, setCopied] = useState(false);
+
+  // Find currently selected service details for dynamic requirements
+  const selectedService = servicesList.find((s) => s.id === formData.serviceId) || servicesList[0];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,9 +60,22 @@ export default function ServiceRequestForm({ servicesList = [] }) {
   };
 
   const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
+    if (e.target.files && e.target.files.length > 0) {
+      const newFiles = Array.from(e.target.files);
+      const validFiles = newFiles.filter((file) => {
+        if (file.size > 10 * 1024 * 1024) {
+          alert(`File "${file.name}" melebihi batas 10 MB.`);
+          return false;
+        }
+        return true;
+      });
+
+      setSelectedFiles((prev) => [...prev, ...validFiles]);
     }
+  };
+
+  const handleRemoveFile = (indexToRemove) => {
+    setSelectedFiles((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
   const handleSubmit = async (e) => {
@@ -42,19 +88,25 @@ export default function ServiceRequestForm({ servicesList = [] }) {
         throw new Error("Silakan pilih jenis layanan terlebih dahulu.");
       }
 
-      const res = await createServiceRequestAction({
-        fullName: formData.fullName,
-        phone: formData.phone,
-        nik: formData.nik,
-        address: formData.address,
-        serviceId: formData.serviceId,
-        description: formData.description || "",
+      const postData = new FormData();
+      postData.append("fullName", formData.fullName);
+      postData.append("phone", formData.phone);
+      postData.append("nik", formData.nik);
+      postData.append("address", formData.address);
+      postData.append("serviceId", formData.serviceId);
+      postData.append("description", formData.description || "");
+
+      selectedFiles.forEach((file) => {
+        postData.append("files", file);
       });
+
+      const res = await createServiceRequestAction(postData);
 
       if (res.success) {
         setSuccessData({
           submissionNumber: res.submissionNumber,
           fullName: formData.fullName,
+          nik: formData.nik,
         });
         // Reset form
         setFormData({
@@ -65,12 +117,12 @@ export default function ServiceRequestForm({ servicesList = [] }) {
           serviceId: servicesList.length > 0 ? servicesList[0].id : "",
           description: "",
         });
-        setSelectedFile(null);
+        setSelectedFiles([]);
       } else {
-        setErrorMsg(res.message || "Gagal membuat pengajuan.");
+        setErrorMsg(formatErrorMessage(res.message || "Gagal membuat pengajuan."));
       }
     } catch (err) {
-      setErrorMsg(err.message || "Terjadi kesalahan saat mengirim pengajuan.");
+      setErrorMsg(formatErrorMessage(err.message || "Terjadi kesalahan saat mengirim pengajuan."));
     } finally {
       setLoading(false);
     }
@@ -85,21 +137,37 @@ export default function ServiceRequestForm({ servicesList = [] }) {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto space-y-6">
       
+      {/* Banner Link to Cek Status */}
+      <div className="p-4 rounded-2xl bg-indigo-50/80 border border-indigo-100 flex flex-wrap items-center justify-between gap-3 text-sm text-indigo-900">
+        <div className="flex items-center gap-2">
+          <Search className="w-4 h-4 text-indigo-600 shrink-0" />
+          <span>Sudah pernah mengajukan layanan sebelumnya?</span>
+        </div>
+        <Link
+          href="/layanan/cek"
+          className="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-white border border-indigo-200 text-indigo-700 font-bold text-xs hover:bg-indigo-100/60 transition shadow-2xs"
+        >
+          <span>Cek Status Pengajuan &rarr;</span>
+        </Link>
+      </div>
+
       {/* Form Container */}
       <form
         onSubmit={handleSubmit}
         className="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-slate-100"
       >
         
-        {/* Error Alert if any */}
+        {/* Error Alert Box */}
         {errorMsg && (
-          <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 flex items-start gap-3 text-rose-800 text-sm">
+          <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 flex items-start gap-3 text-rose-800 text-sm animate-in fade-in">
             <AlertCircle className="w-5 h-5 shrink-0 text-rose-600 mt-0.5" />
             <div>
               <p className="font-bold">Gagal Mengirim Pengajuan</p>
-              <p className="mt-0.5 text-rose-700">{errorMsg}</p>
+              <p className="mt-1 text-rose-700 font-medium leading-relaxed">
+                {formatErrorMessage(errorMsg)}
+              </p>
             </div>
           </div>
         )}
@@ -178,7 +246,7 @@ export default function ServiceRequestForm({ servicesList = [] }) {
           </div>
         </div>
 
-        {/* Horizontal Separator Line (Matching Mockup) */}
+        {/* Horizontal Separator Line */}
         <div className="w-full h-[1.5px] bg-[#dbe5f7] my-8" />
 
         {/* SECTION 2: DETAIL PENGAJUAN */}
@@ -213,10 +281,27 @@ export default function ServiceRequestForm({ servicesList = [] }) {
             </div>
           </div>
 
+          {/* Dynamic Service Requirement Box */}
+          {selectedService && (
+            <div className="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100 flex items-start gap-3">
+              <FileCheck className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+              <div className="text-xs text-indigo-900 leading-relaxed">
+                <p className="font-bold text-indigo-950 text-sm mb-1">
+                  Persyaratan Dokumen untuk {selectedService.name}:
+                </p>
+                <p className="whitespace-pre-line text-slate-700">
+                  {selectedService.requirement ||
+                    selectedService.description ||
+                    "KTP, Kartu Keluarga, dan Surat Pengantar RT/RW."}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Alasan Pengajuan */}
           <div>
             <label className="block text-sm font-bold text-[#1b365d] mb-2">
-              Alasan Pengajuan
+              Alasan / Keterangan Pengajuan
             </label>
             <textarea
               name="description"
@@ -229,32 +314,66 @@ export default function ServiceRequestForm({ servicesList = [] }) {
           </div>
 
           {/* Upload Dokumen Dropzone */}
-          <div>
-            <label className="block text-sm font-bold text-[#1b365d] mb-2">
-              Upload Dokumen (KTP / KK / Surat Pengantar)
+          <div className="space-y-3">
+            <label className="block text-sm font-bold text-[#1b365d]">
+              Upload Dokumen Lampiran (Bisa Lebih dari 1 File)
             </label>
             <label className="relative flex flex-col items-center justify-center p-8 rounded-2xl bg-[#eef2fc] hover:bg-[#e4ebfc] border-2 border-dashed border-indigo-200/80 cursor-pointer transition-colors group">
               <input
                 type="file"
+                multiple
                 className="sr-only"
                 onChange={handleFileChange}
-                accept="image/*,.pdf"
+                accept="image/*,.pdf,.doc,.docx"
               />
               <UploadCloud className="w-10 h-10 text-indigo-400 group-hover:scale-110 transition-transform mb-2" />
               <span className="text-sm font-semibold text-[#1b365d]">
-                {selectedFile ? selectedFile.name : "Klik untuk memilih dokumen"}
+                Klik untuk memilih satu atau beberapa dokumen
               </span>
               <span className="text-xs text-slate-400 mt-1">
-                {selectedFile
-                  ? `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`
-                  : "Format disarankan: JPG, PNG, atau PDF (Maks. 5MB)"}
+                Format disarankan: JPG, PNG, PDF, DOCX (Maks. 10MB per file)
               </span>
             </label>
+
+            {/* Selected File List */}
+            {selectedFiles.length > 0 && (
+              <div className="mt-3 space-y-2">
+                <p className="text-xs font-semibold text-slate-500">
+                  Dokumen Terpilih ({selectedFiles.length} file):
+                </p>
+                <div className="space-y-2">
+                  {selectedFiles.map((file, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm"
+                    >
+                      <div className="flex items-center gap-2.5 overflow-hidden">
+                        <FileIcon className="w-4 h-4 text-indigo-600 shrink-0" />
+                        <span className="font-medium text-slate-800 truncate max-w-xs sm:max-w-md">
+                          {file.name}
+                        </span>
+                        <span className="text-xs text-slate-400 font-mono shrink-0">
+                          ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFile(idx)}
+                        className="p-1 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors"
+                        title="Hapus dokumen ini"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
         </div>
 
-        {/* Submit Button (Full Width Dark Navy) */}
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
@@ -263,10 +382,10 @@ export default function ServiceRequestForm({ servicesList = [] }) {
           {loading ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Memproses Pengajuan...</span>
+              <span>Memproses Pengajuan & Mengunggah Dokumen...</span>
             </>
           ) : (
-            <span>Ajukan</span>
+            <span>Kirim Pengajuan</span>
           )}
         </button>
 
@@ -275,23 +394,24 @@ export default function ServiceRequestForm({ servicesList = [] }) {
       {/* Success Modal Popup */}
       {successData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 text-center">
+          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 text-center space-y-4">
             
-            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
               <CheckCircle2 className="w-10 h-10" />
             </div>
 
-            <h3 className="text-2xl font-extrabold text-[#1b365d]">
-              Pengajuan Berhasil!
-            </h3>
-
-            <p className="text-sm text-slate-600 mt-2">
-              Pengajuan surat/layanan atas nama <span className="font-bold text-slate-900">{successData.fullName}</span> telah terdaftar.
-            </p>
+            <div>
+              <h3 className="text-2xl font-extrabold text-[#1b365d]">
+                Pengajuan Berhasil!
+              </h3>
+              <p className="text-sm text-slate-600 mt-1">
+                Pengajuan surat/layanan atas nama <span className="font-bold text-slate-900">{successData.fullName}</span> telah terdaftar.
+              </p>
+            </div>
 
             {/* Submission Number Box */}
-            <div className="my-6 p-4 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-between gap-3">
-              <div className="text-left">
+            <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-between gap-3 text-left">
+              <div>
                 <p className="text-xs font-semibold text-indigo-500 uppercase tracking-wider">
                   Nomor Registrasi
                 </p>
@@ -319,17 +439,26 @@ export default function ServiceRequestForm({ servicesList = [] }) {
               </button>
             </div>
 
-            <p className="text-xs text-slate-400 leading-relaxed mb-6">
-              Simpan nomor registrasi di atas untuk melacak status pengajuan Anda ke pihak kelurahan/desa.
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Simpan nomor registrasi di atas untuk melacak status pengajuan Anda secara berkala.
             </p>
 
-            <button
-              type="button"
-              onClick={() => setSuccessData(null)}
-              className="w-full py-3 rounded-xl bg-[#1c365d] hover:bg-[#132746] text-white font-bold text-sm transition-colors"
-            >
-              Tutup
-            </button>
+            <div className="flex flex-col gap-2 pt-2">
+              <Link
+                href={`/layanan/cek?ticket=${encodeURIComponent(successData.submissionNumber)}&nik=${encodeURIComponent(successData.nik)}`}
+                className="w-full py-3 rounded-xl bg-[#1c365d] hover:bg-[#132746] text-white font-bold text-sm transition-colors text-center inline-block"
+              >
+                Cek Status Pengajuan Ini &rarr;
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => setSuccessData(null)}
+                className="w-full py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-xs transition"
+              >
+                Tutup
+              </button>
+            </div>
 
           </div>
         </div>

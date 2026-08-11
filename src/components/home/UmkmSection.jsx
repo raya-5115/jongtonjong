@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Eye, PhoneCall } from "lucide-react";
+import { getPublicImageUrl } from "@/lib/storage-utils";
 
 export default function UmkmSection({ umkmList = [] }) {
   return (
@@ -24,6 +25,7 @@ export default function UmkmSection({ umkmList = [] }) {
             {umkmList.map((item) => {
               const phoneClean = item.phone ? item.phone.replace(/[^0-9]/g, "") : "";
               const waUrl = phoneClean ? `https://wa.me/${phoneClean}` : "#";
+              const imageUrl = getPublicImageUrl(item.productImage);
 
               return (
                 <div
@@ -32,9 +34,9 @@ export default function UmkmSection({ umkmList = [] }) {
                 >
                   {/* Card Image */}
                   <div className="relative aspect-[16/9] w-full bg-indigo-50/80 border-b border-indigo-100 flex items-center justify-center text-slate-400 overflow-hidden">
-                    {item.productImage ? (
+                    {imageUrl ? (
                       <Image
-                        src={item.productImage}
+                        src={imageUrl}
                         alt={item.businessName}
                         fill
                         className="object-cover object-center"
