@@ -1,3 +1,5 @@
+import Image from "next/image";
+import { Building2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -6,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getPublicImageUrl } from "@/lib/storage-utils";
 
 import FacilityActions from "./FacilityActions";
 
@@ -22,7 +25,7 @@ const categoryLabels = {
 export default function FacilityTable({ facilities }) {
   if (facilities.length === 0) {
     return (
-      <div className="rounded-lg border p-8 text-center">
+      <div className="rounded-lg border p-8 text-center bg-white shadow-xs">
         <p className="text-muted-foreground">
           Belum ada fasilitas yang ditambahkan.
         </p>
@@ -31,10 +34,11 @@ export default function FacilityTable({ facilities }) {
   }
 
   return (
-    <div className="rounded-lg border">
+    <div className="rounded-xl border border-slate-200 bg-white shadow-xs overflow-hidden">
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className="w-16">Foto</TableHead>
             <TableHead>Nama</TableHead>
             <TableHead>Kategori</TableHead>
             <TableHead>Alamat</TableHead>
@@ -44,21 +48,50 @@ export default function FacilityTable({ facilities }) {
         </TableHeader>
 
         <TableBody>
-          {facilities.map((facility) => (
-            <TableRow key={facility.id}>
-              <TableCell className="font-medium">{facility.name}</TableCell>
+          {facilities.map((facility) => {
+            const imageUrl = getPublicImageUrl(facility.image);
 
-              <TableCell>{categoryLabels[facility.category]}</TableCell>
+            return (
+              <TableRow key={facility.id}>
+                <TableCell>
+                  <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center">
+                    {imageUrl ? (
+                      <Image
+                        src={imageUrl}
+                        alt={facility.name}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <Building2 className="w-5 h-5 text-slate-400" />
+                    )}
+                  </div>
+                </TableCell>
 
-              <TableCell>{facility.address || "-"}</TableCell>
+                <TableCell className="font-medium text-slate-900">
+                  {facility.name}
+                </TableCell>
 
-              <TableCell>{facility.phone || "-"}</TableCell>
+                <TableCell>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
+                    {categoryLabels[facility.category] || facility.category}
+                  </span>
+                </TableCell>
 
-              <TableCell className="text-right">
-                <FacilityActions facility={facility} />
-              </TableCell>
-            </TableRow>
-          ))}
+                <TableCell className="text-slate-600">
+                  {facility.address || "-"}
+                </TableCell>
+
+                <TableCell className="text-slate-600">
+                  {facility.phone || "-"}
+                </TableCell>
+
+                <TableCell className="text-right">
+                  <FacilityActions facility={facility} />
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>
