@@ -134,3 +134,15 @@ enum FacilityCategory {
   SOSIAL
   LAINNYA
 }
+
+model VillageProfile {
+  id          String   @id @default(cuid())
+  villageName String   @default("Desa Tonjong")
+  title       String   @default("Mengenal Desa Tonjong")
+  image       String?
+  description String
+  vision      String
+  mission     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

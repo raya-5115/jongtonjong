@@ -7,8 +7,16 @@ export function getPublicImageUrl(path) {
     return null;
   }
 
-  if (path.startsWith("http://") || path.startsWith("https://")) {
+  if (
+    path.startsWith("http://") ||
+    path.startsWith("https://") ||
+    path.startsWith("/")
+  ) {
     return path;
+  }
+
+  if (!path.includes("/")) {
+    return `/${path}`;
   }
 
   return `${SUPABASE_URL}/storage/v1/object/public/images/${path}`;
