@@ -1,17 +1,11 @@
-"use client";
-
-import { useState } from "react";
 import Image from "next/image";
 import { getPublicImageUrl } from "@/lib/storage-utils";
 
 export default function AboutSection({ profile }) {
   const title = profile?.title || "Mengenal Desa Tonjong";
   const villageName = profile?.villageName || "Desa Tonjong";
-  const initialImageUrl = profile?.image
-    ? getPublicImageUrl(profile.image)
-    : "/kantor-desa.png";
-
-  const [imgSrc, setImgSrc] = useState(initialImageUrl);
+  const rawImage = profile?.image || "/kantor-desa.png";
+  const imageUrl = getPublicImageUrl(rawImage) || "/kantor-desa.png";
 
   const descriptionParagraphs = profile?.description
     ? profile.description.split("\n").filter((p) => p.trim() !== "")
@@ -37,12 +31,12 @@ export default function AboutSection({ profile }) {
             {/* Left: Office Image */}
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-md border border-slate-200/60 lg:col-span-6">
               <Image
-                src={imgSrc || "/kantor-desa.png"}
-                alt={`Foto Kantor ${villageName}`}
+                src={imageUrl}
+                alt={`Kantor ${villageName}`}
                 fill
                 className="object-cover object-center"
                 priority
-                onError={() => setImgSrc("/kantor-desa.png")}
+                unoptimized={true}
               />
             </div>
 

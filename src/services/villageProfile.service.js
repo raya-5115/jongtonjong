@@ -14,11 +14,6 @@ export const DEFAULT_VILLAGE_PROFILE = {
 
 export async function getVillageProfile() {
   try {
-    if (!prisma.villageProfile) {
-      console.warn("Prisma Client belum memuat model villageProfile. Menggunakan data default.");
-      return DEFAULT_VILLAGE_PROFILE;
-    }
-
     let profile = await prisma.villageProfile.findFirst();
 
     if (!profile) {
@@ -34,9 +29,12 @@ export async function getVillageProfile() {
   }
 }
 
-export async function updateVillageProfile(data) {
-  if (!prisma.villageProfile) {
-    throw new Error("Model VillageProfile belum dimuat oleh Prisma Client. Silakan restart server dev (npm run dev) untuk memperbarui Prisma Client.");
+export async function updateVillageProfile(id, data) {
+  if (id) {
+    return prisma.villageProfile.update({
+      where: { id },
+      data,
+    });
   }
 
   const existing = await prisma.villageProfile.findFirst();
@@ -46,12 +44,12 @@ export async function updateVillageProfile(data) {
       where: { id: existing.id },
       data,
     });
-  } else {
-    return prisma.villageProfile.create({
-      data: {
-        ...DEFAULT_VILLAGE_PROFILE,
-        ...data,
-      },
-    });
   }
+
+  return prisma.villageProfile.create({
+    data: {
+      ...DEFAULT_VILLAGE_PROFILE,
+      ...data,
+    },
+  });
 }

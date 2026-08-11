@@ -9,15 +9,22 @@ import { getPublicImageUrl } from "@/lib/storage-utils";
 export default function ShortProfileSection({ profile }) {
   const villageName = profile?.villageName || "Desa Tonjong";
   const title = profile?.title || "Mengenal Desa Tonjong";
-  const initialImageUrl = profile?.image
+  const imageUrl = profile?.image
     ? getPublicImageUrl(profile.image)
     : "/kantor-desa.png";
 
-  const [imgSrc, setImgSrc] = useState(initialImageUrl);
+  const [hasError, setHasError] = useState(false);
+  const [prevUrl, setPrevUrl] = useState(imageUrl);
+
+  if (prevUrl !== imageUrl) {
+    setPrevUrl(imageUrl);
+    setHasError(false);
+  }
+
+  const displaySrc = hasError ? "/kantor-desa.png" : (imageUrl);
 
   const descriptionText =
-    profile?.description?.split("\n")[0] ||
-    "Desa Tonjong adalah desa yang terletak di Kecamatan Palabuhanratu, Kabupaten Sukabumi, Jawa Barat. Berkomitmen untuk mewujudkan tata kelola pemerintahan desa yang transparan, profesional, serta memberikan pelayanan publik terbaik demi kesejahteraan masyarakat.";
+    profile?.description?.split("\n")[0]
 
   return (
     <section className="w-full bg-slate-50 py-12 sm:py-16 md:py-20">
@@ -26,11 +33,12 @@ export default function ShortProfileSection({ profile }) {
           {/* Left Column: Image Card */}
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-indigo-50/80 border border-indigo-100/80 shadow-sm">
             <Image
-              src={imgSrc || "/kantor-desa.png"}
+              src={displaySrc}
               alt={`Foto Kantor ${villageName}`}
               fill
               className="object-cover object-center"
-              onError={() => setImgSrc("/kantor-desa.png")}
+              unoptimized={true}
+              onError={() => setHasError(true)}
             />
           </div>
 

@@ -51,6 +51,7 @@ export default function VillageProfileForm({ profile }) {
     e.preventDefault();
 
     const formData = new FormData();
+    formData.append("id", profile?.id || "");
     formData.append("villageName", villageName);
     formData.append("title", title);
     formData.append("description", description);
@@ -63,7 +64,7 @@ export default function VillageProfileForm({ profile }) {
 
     startTransition(async () => {
       try {
-        const res = await updateVillageProfileAction(formData);
+        const res = await updateVillageProfileAction(profile?.id, formData);
         if (res.success) {
           toast.success(res.message || "Profil desa berhasil diperbarui.");
           if (res.data?.image) {
@@ -82,16 +83,14 @@ export default function VillageProfileForm({ profile }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Gambar & Identitas Utama */}
       <Card>
         <CardHeader>
           <CardTitle>Foto & Judul Halaman Profil</CardTitle>
           <CardDescription>
-            Atur foto sampul/kantor desa dan judul utama yang tampil di halaman profil publik.
+            Edit foto sampul/kantor desa dan judul utama yang tampil di halaman profil publik.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Image Preview & File Input */}
           <div className="space-y-3">
             <Label>Foto Profil / Kantor Desa</Label>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -102,6 +101,7 @@ export default function VillageProfileForm({ profile }) {
                     alt="Preview Profil Desa"
                     fill
                     className="object-cover"
+                    unoptimized={true}
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-slate-400">
@@ -150,7 +150,6 @@ export default function VillageProfileForm({ profile }) {
         </CardContent>
       </Card>
 
-      {/* Deskripsi / Sejarah */}
       <Card>
         <CardHeader>
           <CardTitle>Deskripsi & Tentang Desa</CardTitle>
@@ -176,7 +175,6 @@ export default function VillageProfileForm({ profile }) {
         </CardContent>
       </Card>
 
-      {/* Visi & Misi */}
       <Card>
         <CardHeader>
           <CardTitle>Visi & Misi Desa</CardTitle>
@@ -207,14 +205,10 @@ export default function VillageProfileForm({ profile }) {
               placeholder="Tuliskan poin-poin misi desa..."
               required
             />
-            <p className="text-xs text-muted-foreground">
-              Tuliskan poin-poin misi desa secara jelas.
-            </p>
           </div>
         </CardContent>
       </Card>
 
-      {/* Submit Button */}
       <div className="flex justify-end">
         <Button
           type="submit"

@@ -48,6 +48,7 @@ export default function FacilitySection({ facilities = [] }) {
                         alt={item.name}
                         fill
                         className="object-cover object-center"
+                        unoptimized={true}
                       />
                     ) : (
                       <svg className="h-10 w-10 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -38,6 +38,7 @@ export default function PublicFacilityCard({ facility, onDetailClick, onContactC
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            unoptimized={true}
           />
         ) : (
           <div className="flex flex-col items-center justify-center text-indigo-400/70 p-4 text-center">

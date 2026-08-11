@@ -16,8 +16,9 @@ function cleanErrorMessage(error) {
   return error?.message || "Terjadi kesalahan pada server.";
 }
 
-export async function updateVillageProfileAction(formData) {
+export async function updateVillageProfileAction(id, formData) {
   try {
+    const targetId = typeof id === "string" ? id : formData.get("id");
     const villageName = formData.get("villageName");
     const title = formData.get("title");
     const description = formData.get("description");
@@ -36,27 +37,41 @@ export async function updateVillageProfileAction(formData) {
     const currentProfile = await getVillageProfile();
     let imagePath = currentProfile?.image || null;
 
-    if (image && image instanceof File && image.size > 0) {
+    const hasNewFile = Boolean(
+      image &&
+        typeof image === "object" &&
+        typeof image.size === "number" &&
+        image.size > 0 &&
+        Boolean(image.name)
+    );
+
+    if (hasNewFile) {
       const newImagePath = await uploadImage({
         file: image,
         folder: "profil",
       });
 
-      if (currentProfile?.image && !currentProfile.image.startsWith("/")) {
-        try {
-          await deleteFile({
-            bucket: "images",
-            path: currentProfile.image,
-          });
-        } catch (err) {
-          console.error("Gagal menghapus foto profil lama:", err);
+      if (currentProfile?.image) {
+        const oldPath = currentProfile.image.startsWith("/")
+          ? currentProfile.image.slice(1)
+          : currentProfile.image;
+
+        if (oldPath.startsWith("profil/")) {
+          try {
+            await deleteFile({
+              bucket: "images",
+              path: oldPath,
+            });
+          } catch (err) {
+            console.error("Gagal menghapus foto profil lama:", err);
+          }
         }
       }
 
       imagePath = newImagePath;
     }
 
-    const updated = await updateVillageProfile({
+    const updated = await updateVillageProfile(targetId || currentProfile?.id, {
       ...validated,
       image: imagePath,
     });
