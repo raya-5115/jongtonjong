@@ -7,22 +7,35 @@ import {
   deleteFile,
 } from "@/services/storage.service";
 
+function isFileObject(file) {
+  return Boolean(
+    file &&
+      typeof file === "object" &&
+      typeof file.size === "number" &&
+      file.size > 0 &&
+      Boolean(file.name)
+  );
+}
+
 export async function createFacilityAction(formData) {
-  const name = formData.get("name");
-  const category = formData.get("category");
-  const description = formData.get("description");
-  const address = formData.get("address");
-  const phone = formData.get("phone");
+  let imagePath = null;
   const image = formData.get("image");
 
-  if (!name || !category) {
-    throw new Error("Nama dan kategori fasilitas wajib diisi.");
-  }
-
-  let imagePath = null;
-
   try {
-    if (image && image instanceof File && image.size > 0) {
+    const name = formData.get("name");
+    const category = formData.get("category");
+    const description = formData.get("description");
+    const address = formData.get("address");
+    const phone = formData.get("phone");
+
+    if (!name || !category) {
+      return {
+        success: false,
+        message: "Nama dan kategori fasilitas wajib diisi.",
+      };
+    }
+
+    if (isFileObject(image)) {
       imagePath = await uploadImage({
         file: image,
         folder: "fasilitas",
@@ -46,7 +59,7 @@ export async function createFacilityAction(formData) {
     return {
       success: true,
       message: "Fasilitas berhasil ditambahkan.",
-      data: facility,
+      data: JSON.parse(JSON.stringify(facility)),
     };
   } catch (error) {
     if (imagePath) {
@@ -55,101 +68,136 @@ export async function createFacilityAction(formData) {
         path: imagePath,
       });
     }
-
-    throw error;
+    return {
+      success: false,
+      message: error?.message || "Gagal menambahkan fasilitas.",
+    };
   }
 }
 
 export async function updateFacilityAction(id, formData) {
-  const existing = await prisma.facility.findUnique({
-    where: { id },
-  });
-
-  if (!existing) {
-    throw new Error("Fasilitas tidak ditemukan.");
-  }
-
-  const name = formData.get("name");
-  const category = formData.get("category");
-  const description = formData.get("description");
-  const address = formData.get("address");
-  const phone = formData.get("phone");
-  const image = formData.get("image");
-
-  if (!name || !category) {
-    throw new Error("Nama dan kategori fasilitas wajib diisi.");
-  }
-
-  let imagePath = existing.image;
-
-  if (image && image instanceof File && image.size > 0) {
-    const newImagePath = await uploadImage({
-      file: image,
-      folder: "fasilitas",
-    });
-
-    if (existing.image) {
-      await deleteFile({
-        bucket: "images",
-        path: existing.image,
-      });
+  try {
+    if (!id) {
+      return {
+        success: false,
+        message: "ID fasilitas tidak ditemukan.",
+      };
     }
 
-    imagePath = newImagePath;
+    const existing = await prisma.facility.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      return {
+        success: false,
+        message: "Fasilitas tidak ditemukan.",
+      };
+    }
+
+    const name = formData.get("name");
+    const category = formData.get("category");
+    const description = formData.get("description");
+    const address = formData.get("address");
+    const phone = formData.get("phone");
+    const image = formData.get("image");
+
+    if (!name || !category) {
+      return {
+        success: false,
+        message: "Nama dan kategori fasilitas wajib diisi.",
+      };
+    }
+
+    let imagePath = existing.image;
+
+    if (isFileObject(image)) {
+      const newImagePath = await uploadImage({
+        file: image,
+        folder: "fasilitas",
+      });
+
+      if (existing.image) {
+        await deleteFile({
+          bucket: "images",
+          path: existing.image,
+        });
+      }
+
+      imagePath = newImagePath;
+    }
+
+    const facility = await prisma.facility.update({
+      where: { id },
+      data: {
+        name,
+        category,
+        description: description || null,
+        address: address || null,
+        phone: phone || null,
+        image: imagePath,
+      },
+    });
+
+    revalidatePath("/dashboard/fasilitas");
+    revalidatePath(`/dashboard/fasilitas/${id}/edit`);
+    revalidatePath("/fasilitas");
+
+    return {
+      success: true,
+      message: "Fasilitas berhasil diperbarui.",
+      data: JSON.parse(JSON.stringify(facility)),
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error?.message || "Gagal memperbarui fasilitas.",
+    };
   }
-
-  const facility = await prisma.facility.update({
-    where: { id },
-    data: {
-      name,
-      category,
-      description: description || null,
-      address: address || null,
-      phone: phone || null,
-      image: imagePath,
-    },
-  });
-
-  revalidatePath("/dashboard/fasilitas");
-  revalidatePath(`/dashboard/fasilitas/${id}/edit`);
-  revalidatePath("/fasilitas");
-
-  return {
-    success: true,
-    message: "Fasilitas berhasil diperbarui.",
-    data: facility,
-  };
 }
 
 export async function deleteFacilityAction(id) {
-  if (!id) {
-    throw new Error("ID fasilitas tidak ditemukan.");
-  }
+  try {
+    if (!id) {
+      return {
+        success: false,
+        message: "ID fasilitas tidak ditemukan.",
+      };
+    }
 
-  const facility = await prisma.facility.findUnique({
-    where: {
-      id,
-    },
-  });
-
-  if (!facility) {
-    throw new Error("Fasilitas tidak ditemukan.");
-  }
-
-  await prisma.facility.delete({
-    where: {
-      id,
-    },
-  });
-
-  if (facility.image) {
-    await deleteFile({
-      bucket: "images",
-      path: facility.image,
+    const facility = await prisma.facility.findUnique({
+      where: { id },
     });
-  }
 
-  return {
-    success: true,
-  };
+    if (!facility) {
+      return {
+        success: false,
+        message: "Fasilitas tidak ditemukan.",
+      };
+    }
+
+    await prisma.facility.delete({
+      where: { id },
+    });
+
+    if (facility.image) {
+      await deleteFile({
+        bucket: "images",
+        path: facility.image,
+      });
+    }
+
+    revalidatePath("/dashboard/fasilitas");
+    revalidatePath("/fasilitas");
+
+    return {
+      success: true,
+      message: "Fasilitas berhasil dihapus.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error?.message || "Gagal menghapus fasilitas.",
+    };
+  }
 }
