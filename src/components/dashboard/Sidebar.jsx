@@ -76,7 +76,7 @@ export default function Sidebar({ user }) {
           </div>
           <div className="min-w-0 flex-1">
             <h2 className="truncate text-sm font-bold text-slate-900 leading-tight">
-              {user?.name || "KKN IPB"}
+              {user?.name || "Admin Desa"}
             </h2>
             <p className="text-[11px] font-bold tracking-wider text-[#00236f] uppercase mt-0.5">
               {roleText}
@@ -89,7 +89,7 @@ export default function Sidebar({ user }) {
         <div className="flex justify-end">
           <button
             type="button"
-            onClick={() => signOut({ callbackUrl: "/login" })}
+            onClick={() => signOut({ callbackUrl: "/login", redirectTo: "/login" })}
             className="flex items-center gap-2 rounded-2xl bg-[#fff0f0] hover:bg-rose-100 text-rose-600 px-4 py-2 text-sm font-semibold transition-colors duration-150 cursor-pointer"
           >
             <LogOut className="h-4 w-4 stroke-[2.2]" />

@@ -22,7 +22,7 @@ export default function UserMenu({ user }) {
         </DropdownMenuItem>
 
         <DropdownMenuItem
-          onClick={() => signOut({ callbackUrl: "/login" })}
+          onClick={() => signOut({ callbackUrl: "/login", redirectTo: "/login" })}
           className="text-red-500"
         >
           Logout
