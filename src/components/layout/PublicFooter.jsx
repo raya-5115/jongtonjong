@@ -16,7 +16,7 @@ export default function PublicFooter() {
     <footer className="w-full bg-[#0c183a] text-white border-t border-white/10">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:px-8">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-12 lg:gap-16">
-          
+
           {/* Column 1: Brand & Alamat */}
           <div className="flex flex-col gap-6">
             <Link href="/" className="inline-block transition-opacity hover:opacity-95">
@@ -30,7 +30,7 @@ export default function PublicFooter() {
               </div>
             </Link>
             <p className="text-sm leading-relaxed text-slate-200/90 max-w-sm">
-              Jl. Raya Tonjong, Kecamatan Palabuhanratu, Kabupaten Sukabumi, Jawa Barat 43364
+              Jl. Raya Palabuhanratu Km 11 No 10 Kp. Parung Cabok, RT.003/RW.003, Tonjong, Kec. Pelabuhanratu, Kabupaten Sukabumi, Jawa Barat 43364
             </p>
           </div>
 
@@ -67,20 +67,20 @@ export default function PublicFooter() {
             <ul className="flex flex-col gap-3.5 pt-1 text-sm text-slate-200">
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 shrink-0 text-white" />
-                <a 
-                  href="mailto:desatonjong@gmail.com" 
+                <a
+                  href="mailto:pemdestonjong19@gmail.com"
                   className="transition-colors hover:text-white hover:underline"
                 >
-                  desatonjong@gmail.com
+                  pemdestonjong19@gmail.com
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 shrink-0 text-white" />
-                <a 
-                  href="tel:0211234567" 
+                <a
+                  href="https://wa.me/6285793043301"
                   className="transition-colors hover:text-white hover:underline"
                 >
-                  (021) 1234567
+                  085793043301
                 </a>
               </li>
               <li className="flex items-center gap-3">
