@@ -2,6 +2,21 @@ import Link from "next/link";
 import Image from "next/image";
 import { getPublicImageUrl } from "@/lib/storage-utils";
 
+function stripMarkdown(text) {
+  if (!text) return "";
+  return text
+    .replace(/!\[.*?\]\(.*?\)/g, "")
+    .replace(/\[([^\]]+)\]\(.*?\)/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/~~([^~]+)~~/g, "$1")
+    .replace(/^#+\s+/gm, "")
+    .replace(/^>\s+/gm, "")
+    .replace(/^[-*]\s+/gm, "")
+    .replace(/^\d+\.\s+/gm, "")
+    .trim();
+}
+
 export default function NewsGrid({ newsList = [] }) {
   if (newsList.length === 0) {
     return null;
@@ -13,6 +28,7 @@ export default function NewsGrid({ newsList = [] }) {
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {newsList.map((item) => {
           const imageUrl = getPublicImageUrl(item.image);
+          const excerpt = stripMarkdown(item.excerpt || item.content) || "Informasi seputar perkembangan dan kegiatan Desa Tonjong.";
 
           return (
             <article
@@ -53,7 +69,7 @@ export default function NewsGrid({ newsList = [] }) {
                 </h3>
 
                 <p className="mt-2 text-sm text-slate-600 leading-relaxed line-clamp-3">
-                  {item.content || item.excerpt || "Informasi seputar perkembangan dan kegiatan Desa Tonjong."}
+                  {excerpt}
                 </p>
               </div>
             </article>

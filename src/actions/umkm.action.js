@@ -50,6 +50,7 @@ export async function createUmkmAction(formData) {
       },
     });
 
+    revalidatePath("/");
     revalidatePath("/dashboard/umkm");
     revalidatePath("/umkm");
 
@@ -135,6 +136,7 @@ export async function updateUmkmAction(id, formData) {
       },
     });
 
+    revalidatePath("/");
     revalidatePath("/dashboard/umkm");
     revalidatePath(`/dashboard/umkm/${id}/edit`);
     revalidatePath("/umkm");
@@ -183,6 +185,7 @@ export async function deleteUmkmAction(id) {
       });
     }
 
+    revalidatePath("/");
     revalidatePath("/dashboard/umkm");
     revalidatePath("/umkm");
 

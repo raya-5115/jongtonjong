@@ -179,22 +179,22 @@ export default function MarkdownContent({ content }) {
   }
 
   return (
-    <div className="space-y-6 font-normal text-slate-700 text-base sm:text-lg leading-relaxed">
+    <div className="space-y-5 font-normal text-slate-700 text-sm sm:text-base leading-relaxed">
       {blocks.map((block, index) => {
         switch (block.type) {
           case "image":
             return (
-              <figure key={index} className="my-6 sm:my-8 space-y-2">
-                <div className="relative w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-950 shadow-md transition-shadow hover:shadow-lg">
+              <figure key={index} className="my-5 space-y-2">
+                <div className="relative w-full max-w-3xl mx-auto overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-950 shadow-sm transition-shadow hover:shadow-md">
                   <img
                     src={block.url}
                     alt={block.alt}
-                    className="w-full max-h-[560px] object-cover rounded-2xl block"
+                    className="w-full max-h-[440px] object-cover rounded-2xl block"
                     loading="lazy"
                   />
                 </div>
                 {block.alt && block.alt !== "Gambar" && (
-                  <figcaption className="text-center text-xs sm:text-sm text-slate-500 font-medium italic">
+                  <figcaption className="text-center text-xs text-slate-500 font-medium italic">
                     {block.alt}
                   </figcaption>
                 )}
@@ -205,7 +205,7 @@ export default function MarkdownContent({ content }) {
             return (
               <h2
                 key={index}
-                className="pt-4 text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug"
+                className="pt-3 text-lg sm:text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight leading-snug"
               >
                 {renderInlineFormatting(block.text)}
               </h2>
@@ -215,7 +215,7 @@ export default function MarkdownContent({ content }) {
             return (
               <h3
                 key={index}
-                className="pt-2 text-lg sm:text-xl font-bold text-slate-800 tracking-tight"
+                className="pt-2 text-base sm:text-lg font-bold text-slate-800 tracking-tight"
               >
                 {renderInlineFormatting(block.text)}
               </h3>
@@ -225,7 +225,7 @@ export default function MarkdownContent({ content }) {
             return (
               <blockquote
                 key={index}
-                className="my-5 border-l-4 border-emerald-500 bg-emerald-50/50 rounded-r-2xl p-4 sm:p-5 italic text-slate-700 text-base sm:text-lg shadow-2xs font-normal"
+                className="my-4 border-l-4 border-emerald-500 bg-emerald-50/50 rounded-r-xl p-3.5 sm:p-4 italic text-slate-700 text-sm sm:text-base shadow-2xs font-normal"
               >
                 {renderInlineFormatting(block.text)}
               </blockquote>
@@ -233,7 +233,7 @@ export default function MarkdownContent({ content }) {
 
           case "unordered-list":
             return (
-              <ul key={index} className="my-4 list-disc list-inside space-y-2 pl-2 text-slate-700 font-normal">
+              <ul key={index} className="my-3 list-disc list-inside space-y-1.5 pl-2 text-slate-700 font-normal text-sm sm:text-base">
                 {block.items.map((item, itemIdx) => (
                   <li key={itemIdx}>{renderInlineFormatting(item)}</li>
                 ))}
@@ -242,7 +242,7 @@ export default function MarkdownContent({ content }) {
 
           case "ordered-list":
             return (
-              <ol key={index} className="my-4 list-decimal list-inside space-y-2 pl-2 text-slate-700 font-normal">
+              <ol key={index} className="my-3 list-decimal list-inside space-y-1.5 pl-2 text-slate-700 font-normal text-sm sm:text-base">
                 {block.items.map((item, itemIdx) => (
                   <li key={itemIdx}>{renderInlineFormatting(item)}</li>
                 ))}
@@ -252,7 +252,7 @@ export default function MarkdownContent({ content }) {
           case "paragraph":
           default:
             return (
-              <p key={index} className="text-slate-700 font-normal leading-relaxed">
+              <p key={index} className="text-slate-700 font-normal text-sm sm:text-base leading-relaxed">
                 {renderInlineFormatting(block.text)}
               </p>
             );

@@ -2,6 +2,21 @@ import Link from "next/link";
 import Image from "next/image";
 import { getPublicImageUrl } from "@/lib/storage-utils";
 
+function stripMarkdown(text) {
+  if (!text) return "";
+  return text
+    .replace(/!\[.*?\]\(.*?\)/g, "")
+    .replace(/\[([^\]]+)\]\(.*?\)/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/~~([^~]+)~~/g, "$1")
+    .replace(/^#+\s+/gm, "")
+    .replace(/^>\s+/gm, "")
+    .replace(/^[-*]\s+/gm, "")
+    .replace(/^\d+\.\s+/gm, "")
+    .trim();
+}
+
 export default function LatestNewsSection({ news = [] }) {
   return (
     <section className="w-full bg-slate-50 py-12 sm:py-16">
@@ -32,6 +47,7 @@ export default function LatestNewsSection({ news = [] }) {
 
               const newsHref = `/berita/${item.slug || item.id}`;
               const imageUrl = getPublicImageUrl(item.image);
+              const excerpt = stripMarkdown(item.content);
 
               return (
                 <article
@@ -64,7 +80,7 @@ export default function LatestNewsSection({ news = [] }) {
                       <Link href={newsHref}>{item.title}</Link>
                     </h3>
                     <p className="mt-2 text-sm text-slate-600 leading-relaxed line-clamp-3">
-                      {item.content}
+                      {excerpt}
                     </p>
                   </div>
                 </article>
