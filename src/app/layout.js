@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${poppins.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-bold">
+      <body className="min-h-full flex flex-col font-sans">
         {children}
 
         <Toaster richColors />

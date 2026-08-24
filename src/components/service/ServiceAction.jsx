@@ -31,19 +31,20 @@ export default function ServiceActions({ service }) {
   };
 
   return (
-    <div className="flex justify-end gap-1">
+    <div className="flex justify-end gap-2">
       <Link href={`/dashboard/layanan/${service.id}/edit`}>
         <Button
           size="icon"
           variant="outline"
-          className="border-blue-500 text-blue-600 hover:border-blue-400 hover:bg-blue-100 hover:text-blue-700"
+          className="h-9 w-9 rounded-xl border-blue-400 text-blue-500 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600 transition-colors shadow-2xs"
+          title="Edit Layanan"
         >
           <SquarePen size={18} />
         </Button>
       </Link>
 
       <AlertDialog>
-        <AlertDialogTrigger className="inline-flex size-8 items-center justify-center rounded-lg border border-red-500 bg-background text-red-600 transition-colors hover:border-rose-300 hover:bg-rose-100 hover:text-red-700 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 outline-none">
+        <AlertDialogTrigger className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-red-400 bg-white text-red-500 hover:border-red-500 hover:bg-red-50 hover:text-red-600 transition-colors shadow-2xs cursor-pointer outline-none" title="Hapus Layanan">
           <Trash2 size={18} />
         </AlertDialogTrigger>
 

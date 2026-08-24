@@ -41,14 +41,7 @@ export default function DeleteFacilityDialog({ facility }) {
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger
-        render={
-          <Button
-            variant="destructive"
-            size="icon"
-          />
-        }
-      >
+      <AlertDialogTrigger className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-red-400 bg-white text-red-500 hover:border-red-500 hover:bg-red-50 hover:text-red-600 transition-colors shadow-2xs cursor-pointer outline-none" title="Hapus Fasilitas">
         <Trash2 size={18} />
       </AlertDialogTrigger>
 

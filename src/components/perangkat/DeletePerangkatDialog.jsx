@@ -44,8 +44,8 @@ export default function DeletePerangkatDialog({
   return (
     <AlertDialog>
 
-      <AlertDialogTrigger>
-        <Trash2 className="h-4 w-4" />
+      <AlertDialogTrigger className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-red-400 bg-white text-red-500 hover:border-red-500 hover:bg-red-50 hover:text-red-600 transition-colors shadow-2xs cursor-pointer outline-none" title="Hapus Perangkat">
+        <Trash2 size={18} />
       </AlertDialogTrigger>
 
       <AlertDialogContent>

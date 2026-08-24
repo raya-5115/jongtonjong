@@ -25,10 +25,6 @@ export default async function EditNewsPage({ params }) {
       </div>
 
       <NewsForm news={news} />
-
-      <Link href="/dashboard">
-        <Button>Dashboard</Button>
-      </Link>
     </div>
   );
 }

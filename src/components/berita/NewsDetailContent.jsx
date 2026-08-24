@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import { getPublicImageUrl } from "@/lib/storage-utils";
+import MarkdownContent from "@/components/berita/MarkdownContent";
 
 export default function NewsDetailContent({ article }) {
   if (!article) {
@@ -30,11 +31,6 @@ export default function NewsDetailContent({ article }) {
 
   const authorName = article.author?.name || "Admin Desa";
   const imageUrl = getPublicImageUrl(article.image);
-
-  // Split content into paragraphs for clean typography
-  const paragraphs = article.content
-    ? article.content.split("\n").filter((p) => p.trim() !== "")
-    : ["Berita ini berisi informasi terbaru dari Pemerintah Desa Tonjong."];
 
   return (
     <div className="w-full bg-slate-50 py-8 sm:py-12">
@@ -101,10 +97,8 @@ export default function NewsDetailContent({ article }) {
           </div>
 
           {/* Body Content */}
-          <div className="mt-8 space-y-5 text-base sm:text-lg leading-relaxed text-slate-700">
-            {paragraphs.map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
-            ))}
+          <div className="mt-8">
+            <MarkdownContent content={article.content} />
           </div>
 
         </article>
