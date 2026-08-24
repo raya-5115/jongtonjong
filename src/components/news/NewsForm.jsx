@@ -19,9 +19,14 @@ import {
   Undo,
   Redo,
   X,
+  Loader2,
 } from "lucide-react";
 
-import { createNewsAction, updateNewsAction } from "@/actions/news.action";
+import {
+  createNewsAction,
+  updateNewsAction,
+  uploadNewsContentImageAction,
+} from "@/actions/news.action";
 import { slugify } from "@/lib/slugify";
 import { getPublicImageUrl } from "@/lib/storage-utils";
 
@@ -48,7 +53,10 @@ export default function NewsForm({ news = null }) {
     news?.image ? getPublicImageUrl(news.image) : null
   );
 
+  const [isUploadingContentImage, setIsUploadingContentImage] = useState(false);
+
   const textareaRef = useRef(null);
+  const contentImageInputRef = useRef(null);
 
   // Auto-slug on title change
   function handleTitleChange(e) {
@@ -118,10 +126,45 @@ export default function NewsForm({ news = null }) {
     insertFormat("[", `](${url})`);
   }
 
-  function insertImagePrompt() {
-    const url = prompt("Masukkan URL gambar (contoh: https://...):");
-    if (!url) return;
-    insertFormat(`![Gambar](${url})`);
+  function triggerContentImageUpload() {
+    contentImageInputRef.current?.click();
+  }
+
+  async function handleContentImageUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("File harus berupa gambar (JPG, PNG, WebP).");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Ukuran file maksimal 5MB.");
+      return;
+    }
+
+    const toastId = toast.loading("Mengunggah gambar ke Supabase Storage...");
+    try {
+      setIsUploadingContentImage(true);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const result = await uploadNewsContentImageAction(formData);
+
+      if (result.success && result.url) {
+        toast.success("Gambar berhasil diunggah dan disisipkan!", { id: toastId });
+        insertFormat(`\n\n![Gambar](${result.url})\n\n`);
+      } else {
+        toast.error(result.message || "Gagal mengunggah gambar.", { id: toastId });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Terjadi kesalahan saat unggah gambar.", { id: toastId });
+    } finally {
+      setIsUploadingContentImage(false);
+      if (e.target) e.target.value = "";
+    }
   }
 
   function insertTableTemplate() {
@@ -339,14 +382,28 @@ export default function NewsForm({ news = null }) {
               <LinkIcon className="w-4 h-4" />
             </button>
 
-            {/* Image */}
+            {/* Hidden Content Image File Input */}
+            <input
+              type="file"
+              ref={contentImageInputRef}
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleContentImageUpload}
+              className="hidden"
+            />
+
+            {/* Upload & Insert Image */}
             <button
               type="button"
-              onClick={insertImagePrompt}
-              className="p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 transition"
-              title="Insert Image Link"
+              onClick={triggerContentImageUpload}
+              disabled={isUploadingContentImage}
+              className="p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 disabled:opacity-50 transition"
+              title="Unggah & Sisipkan Gambar Berkas"
             >
-              <ImageIcon className="w-4 h-4" />
+              {isUploadingContentImage ? (
+                <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
+              ) : (
+                <ImageIcon className="w-4 h-4" />
+              )}
             </button>
 
             {/* Table */}

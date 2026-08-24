@@ -10,14 +10,14 @@ export default function UserActions({ user }) {
   return (
     <div className="flex justify-end gap-2">
 
-      <Link
-        href={`/dashboard/users/${user.id}/edit`}
-      >
+      <Link href={`/dashboard/users/${user.id}/edit`}>
         <Button
           size="icon"
           variant="outline"
+          className="h-9 w-9 rounded-xl border-blue-400 text-blue-500 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600 transition-colors shadow-2xs"
+          title="Edit Pengguna"
         >
-          <SquarePen className="h-4 w-4" />
+          <SquarePen size={18} />
         </Button>
       </Link>
 

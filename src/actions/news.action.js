@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/slugify";
 import { uploadImage, deleteFile } from "@/services/storage.service";
+import { getPublicImageUrl } from "@/lib/storage-utils";
 import { newsSchema } from "@/validation/news.validation";
 
 function isFileObject(file) {
@@ -199,6 +200,39 @@ export async function deleteNewsAction(id) {
     return {
       success: false,
       message: error?.message || "Gagal menghapus berita.",
+    };
+  }
+}
+
+export async function uploadNewsContentImageAction(formData) {
+  try {
+    const file = formData.get("file");
+
+    if (!isFileObject(file)) {
+      return {
+        success: false,
+        message: "Berkas gambar tidak valid.",
+      };
+    }
+
+    const imagePath = await uploadImage({
+      file,
+      folder: "berita/content",
+    });
+
+    const publicUrl = getPublicImageUrl(imagePath);
+
+    return {
+      success: true,
+      message: "Gambar berhasil diunggah.",
+      url: publicUrl,
+      path: imagePath,
+    };
+  } catch (error) {
+    console.error("Gagal upload gambar isi berita:", error);
+    return {
+      success: false,
+      message: error?.message || "Gagal mengunggah gambar ke Supabase.",
     };
   }
 }
