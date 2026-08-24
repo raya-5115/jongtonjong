@@ -34,7 +34,7 @@ export default function NewsDetailContent({ article }) {
 
   return (
     <div className="w-full bg-slate-50 py-8 sm:py-12">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
 
         {/* Back Link */}
         <Link
@@ -49,7 +49,7 @@ export default function NewsDetailContent({ article }) {
         <article className="overflow-hidden rounded-3xl bg-white p-5 sm:p-8 md:p-10 border border-slate-200/80 shadow-sm">
 
           {/* Featured Hero Image Container */}
-          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-[#0c183a] shadow-md">
+          <div className="relative aspect-[21/9] sm:aspect-[16/7] w-full max-h-[380px] overflow-hidden rounded-2xl bg-[#0c183a] shadow-sm">
             {imageUrl ? (
               <Image
                 src={imageUrl}
@@ -73,11 +73,11 @@ export default function NewsDetailContent({ article }) {
             <div className="absolute inset-0 bg-gradient-to-t from-[#0c183a]/95 via-[#0c183a]/60 to-transparent" />
 
             {/* Overlay Content */}
-            <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8 flex flex-col items-start gap-3">
-              <span className="inline-block rounded-full bg-[#0d9488] px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-sm">
+            <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 flex flex-col items-start gap-2">
+              <span className="inline-block rounded-full bg-[#0d9488] px-3 py-0.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-white shadow-xs">
                 BERITA DESA
               </span>
-              <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl md:text-4xl leading-tight drop-shadow-sm">
+              <h1 className="text-lg font-extrabold tracking-tight text-white sm:text-2xl md:text-3xl leading-tight drop-shadow-sm">
                 {article.title}
               </h1>
             </div>

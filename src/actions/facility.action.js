@@ -53,6 +53,7 @@ export async function createFacilityAction(formData) {
       },
     });
 
+    revalidatePath("/");
     revalidatePath("/dashboard/fasilitas");
     revalidatePath("/fasilitas");
 
@@ -139,6 +140,7 @@ export async function updateFacilityAction(id, formData) {
       },
     });
 
+    revalidatePath("/");
     revalidatePath("/dashboard/fasilitas");
     revalidatePath(`/dashboard/fasilitas/${id}/edit`);
     revalidatePath("/fasilitas");
@@ -187,6 +189,7 @@ export async function deleteFacilityAction(id) {
       });
     }
 
+    revalidatePath("/");
     revalidatePath("/dashboard/fasilitas");
     revalidatePath("/fasilitas");
 

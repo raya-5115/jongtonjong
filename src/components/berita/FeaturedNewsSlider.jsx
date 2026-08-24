@@ -6,6 +6,21 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, Calendar, ArrowRight } from "lucide-react";
 import { getPublicImageUrl } from "@/lib/storage-utils";
 
+function stripMarkdown(text) {
+  if (!text) return "";
+  return text
+    .replace(/!\[.*?\]\(.*?\)/g, "")
+    .replace(/\[([^\]]+)\]\(.*?\)/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/~~([^~]+)~~/g, "$1")
+    .replace(/^#+\s+/gm, "")
+    .replace(/^>\s+/gm, "")
+    .replace(/^[-*]\s+/gm, "")
+    .replace(/^\d+\.\s+/gm, "")
+    .trim();
+}
+
 export default function FeaturedNewsSlider({ news = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -46,6 +61,7 @@ export default function FeaturedNewsSlider({ news = [] }) {
 
   const currentItem = featuredItems[currentIndex] || featuredItems[0];
   const imageUrl = getPublicImageUrl(currentItem.image);
+  const excerpt = stripMarkdown(currentItem.excerpt || currentItem.content) || "Informasi berita terkini dan pembaruan kegiatan dari Pemerintah Desa Tonjong.";
 
   const handlePrev = () => {
     setCurrentIndex((prev) =>
@@ -130,7 +146,7 @@ export default function FeaturedNewsSlider({ news = [] }) {
             </h3>
 
             <p className="mt-3 text-sm sm:text-base leading-relaxed text-slate-600 line-clamp-3">
-              {currentItem.content || currentItem.excerpt || "Informasi berita terkini dan pembaruan kegiatan dari Pemerintah Desa Tonjong."}
+              {excerpt}
             </p>
 
             <div className="mt-6">

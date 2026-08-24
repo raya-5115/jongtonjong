@@ -53,6 +53,7 @@ export async function createNewsAction(formData) {
       },
     });
 
+    revalidatePath("/");
     revalidatePath("/dashboard/berita");
     revalidatePath("/berita");
     revalidatePath(`/berita/${finalSlug}`);
@@ -140,6 +141,7 @@ export async function updateNewsAction(id, formData) {
       },
     });
 
+    revalidatePath("/");
     revalidatePath("/dashboard/berita");
     revalidatePath(`/dashboard/berita/${id}/edit`);
     revalidatePath("/berita");
@@ -189,6 +191,7 @@ export async function deleteNewsAction(id) {
       });
     }
 
+    revalidatePath("/");
     revalidatePath("/dashboard/berita");
     revalidatePath("/berita");
 
