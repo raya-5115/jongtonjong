@@ -8,10 +8,10 @@ import { perangkatSchema } from "@/validation/perangkat.validation";
 function isFileObject(file) {
   return Boolean(
     file &&
-      typeof file === "object" &&
-      typeof file.size === "number" &&
-      file.size > 0 &&
-      Boolean(file.name)
+    typeof file === "object" &&
+    typeof file.size === "number" &&
+    file.size > 0 &&
+    Boolean(file.name)
   );
 }
 
@@ -53,7 +53,7 @@ export async function createPerangkatAction(formData) {
     });
 
     revalidatePath("/dashboard/perangkat");
-    revalidatePath("/profil/perangkat-desa");
+    revalidatePath("/profil");
     revalidatePath("/");
 
     return {
@@ -142,6 +142,7 @@ export async function updatePerangkatAction(id, formData) {
 
     revalidatePath("/dashboard/perangkat");
     revalidatePath(`/dashboard/perangkat/${id}/edit`);
+    revalidatePath("/profil");
     revalidatePath("/profil/perangkat-desa");
     revalidatePath("/");
 
@@ -190,6 +191,7 @@ export async function deletePerangkatAction(id) {
     }
 
     revalidatePath("/dashboard/perangkat");
+    revalidatePath("/profil");
     revalidatePath("/profil/perangkat-desa");
     revalidatePath("/");
 
